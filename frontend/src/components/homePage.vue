@@ -1,12 +1,17 @@
 <script>
 import { DateTime } from 'luxon'
 import axios from 'axios'
+import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useClients } from "@/store/listclients";
 import AttendanceChart from './barChart.vue'
+import zipChart from './pieChart.vue'
 const apiURL = import.meta.env.VITE_ROOT_API
 
 export default {
   components: {
-    AttendanceChart
+    AttendanceChart,
+    zipChart
   },
   data() {
     return {
@@ -110,6 +115,34 @@ export default {
               :label="labels"
               :chart-data="chartData"
             ></AttendanceChart>
+
+            <!-- Start of loading animation -->
+            <div class="mt-40" v-if="loading">
+              <p
+                class="text-6xl font-bold text-center text-gray-500 animate-pulse"
+              >
+                Loading...
+              </p>
+            </div>
+            <!-- End of loading animation -->
+
+            <!-- Start of error alert -->
+            <div class="mt-12 bg-red-50" v-if="error">
+              <h3 class="px-4 py-1 text-4xl font-bold text-white bg-red-800">
+                {{ error.title }}
+              </h3>
+              <p class="p-4 text-lg font-bold text-red-900">
+                {{ error.message }}
+              </p>
+            </div>
+            <!-- End of error alert -->
+          </div>
+          <div>
+            <zipChart
+              v-if="!loading && !error"
+              :label="labels"
+              :chart-data="chartData"
+            ></zipChart>
 
             <!-- Start of loading animation -->
             <div class="mt-40" v-if="loading">
