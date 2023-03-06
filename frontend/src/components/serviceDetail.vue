@@ -14,12 +14,14 @@ export default {
         name: ''
       },
       services: [
-        { id: 1, name: 'Family Support' },
-        { id: 2, name: 'Adult Education' },
-        { id: 3, name: 'Youth Services Program' },
-        { id: 4, name: 'Early Childhood Education' }
+        'Family Support',
+        'Adult Education',
+        'Youth Services Program',
+        'Early Childhood Education'
       ],
-      newServiceName: ''
+      currentIndex: null,
+      updatedService: '',
+      newService: ''
     }
   },
   methods: {
@@ -39,15 +41,21 @@ export default {
           })
       }
     },
-    addService: function () {
-      // Generate a unique ID for the new item
-      const newId = this.services.length + 1
-      // Create a new service object with the entered name and the generated ID
-      const newService = { id: newId, name: this.newServiceName }
-      // Add the new service to the list
-      this.services.push(newService)
-      // Clear the input field
-      this.newServiceName = ''
+    deleteService(index) {
+      this.services.splice(index, 1)
+    },
+    showUpdateBox(index) {
+      this.currentIndex = index
+      this.updatedService = this.services[index]
+    },
+    updateService(index) {
+      this.services[index] = this.updatedService
+      this.currentIndex = null
+      this.updatedService = ''
+    },
+    addService() {
+      this.services.push(this.newService)
+      this.newService = ''
     }
   },
   // sets validations for the various data properties
@@ -83,12 +91,12 @@ export default {
             <form @submit.prevent="addService">
               <input
                 type="text"
-                v-model="newServiceName"
-                placeholder="Enter service name"
+                v-model="newService"
+                placeholder="Enter new service"
                 class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
               />
-              <button class="bg-red-700 text-white rounded" type="submit">
-                Add service
+              <button class="bg-red-700 text-white rounded" @click="addService">
+                Add Service
               </button>
             </form>
           </div>
@@ -97,8 +105,8 @@ export default {
           <div>
             <h1>Services</h1>
             <ul>
-              <li v-for="service in services" :key="service.id">
-                {{ service.name }}
+              <li v-for="(service, index) in services" :key="index">
+                {{ service }}
               </li>
             </ul>
           </div>
@@ -111,6 +119,36 @@ export default {
         >
           <h2 class="text-2xl font-bold">Update Service</h2>
           <!-- form field -->
+          <ul>
+            <li v-for="(service, index) in services" :key="index">
+              {{ service }}
+              <button
+                class="bg-red-700 text-white rounded"
+                @click="deleteService(index)"
+              >
+                Delete Service
+              </button>
+              <button
+                class="bg-red-700 text-white rounded"
+                @click="showUpdateBox(index)"
+              >
+                Update Service
+              </button>
+              <div v-if="index === currentIndex">
+                <input
+                  type="text"
+                  v-model="updatedService"
+                  placeholder="Enter updated service"
+                />
+                <button
+                  class="bg-red-700 text-white rounded"
+                  @click="updateService(index)"
+                >
+                  Save
+                </button>
+              </div>
+            </li>
+          </ul>
         </div>
       </form>
     </div>
