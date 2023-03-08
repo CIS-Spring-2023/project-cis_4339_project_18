@@ -45,6 +45,11 @@ export default {
             </select>
           </div>
           <button type="submit" class="btn btn-primary" v-on:click.prevent="store.login(username, password, role === 'editor' ? 'editor' : 'viewer')">Login</button>
+          <div class="message-box">
+            <p>Login Credentials</p>
+            <p>Username: ed</p>
+            <p>Password: ed</p>
+        </div>
         </form>
       </div>
     </div>
