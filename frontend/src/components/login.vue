@@ -3,7 +3,7 @@ import axios from 'axios'
 const apiURL = import.meta.env.VITE_ROOT_API
 import { useLoggedInUserStore } from "@/store/loggedInUser";
 
-
+//this code takes the username, password, role and stores it
 export default {
   data: () => {
     return {
@@ -15,12 +15,12 @@ export default {
   setup() {
     const store = useLoggedInUserStore()
     return {
-      // you can return the whole store instance to use it in the template
+      // returns the store instances to loggedinuser
       store,
     }
   }
 };
-
+// code below creates the login page using html, then below is styled using css
 </script>
 <template> 
   <main>
