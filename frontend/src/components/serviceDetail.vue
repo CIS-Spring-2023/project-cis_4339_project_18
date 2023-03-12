@@ -11,8 +11,8 @@ export default {
     return { v$: useVuelidate({ $autoDirty: true }) }
   },
   setup() {
-    const user = useLoggedInUserStore();
-    return { user };
+    const user = useLoggedInUserStore()
+    return { user }
   },
   data() {
     return {
@@ -90,7 +90,12 @@ export default {
         <div
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
         >
-          <h2 v-if="user.isLoggedIn && user.isEditor" class="text-2xl font-bold">Add Service</h2>
+          <h2
+            v-if="user.isLoggedIn && user.isEditor"
+            class="text-2xl font-bold"
+          >
+            Add Service
+          </h2>
 
           <!-- form field -->
           <div v-if="user.isLoggedIn && user.isEditor" class="flex flex-col">
@@ -101,7 +106,7 @@ export default {
                 placeholder="Enter new service"
                 class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
               />
-              <button class="bg-red-700 text-white rounded" @click="addService">
+              <button type="submit" class="bg-red-700 text-white rounded">
                 Add Service
               </button>
             </form>
@@ -120,39 +125,41 @@ export default {
         <div></div>
         <div></div>
         <!-- grid container -->
-        <div v-if="user.isLoggedIn && user.isEditor"
+        <div
+          v-if="user.isLoggedIn && user.isEditor"
           class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
         >
           <h2 class="text-2xl font-bold">Update Service</h2>
           <!-- form field -->
           <ul>
             <li v-for="(service, index) in services" :key="index">
-              {{ service }}
-              <br>
-              <button
-                class="bg-red-700 text-white rounded"
-                @click="deleteService(index)"
-              >
-                Delete Service
-              </button>
-              <button
-                class="bg-red-700 text-white rounded"
-                @click="showUpdateBox(index)"
-              >
-                Update Service
-              </button>
-              <div v-if="index === currentIndex">
-                <input
-                  type="text"
-                  v-model="updatedService"
-                  placeholder="Enter updated service"
-                />
+              <div>{{ service }}</div>
+              <div>
                 <button
                   class="bg-red-700 text-white rounded"
-                  @click="updateService(index)"
+                  @click="deleteService(index)"
                 >
-                  Save
+                  Delete Service
                 </button>
+                <button
+                  class="bg-red-700 text-white rounded"
+                  @click="showUpdateBox(index)"
+                >
+                  Update Service
+                </button>
+                <div v-if="index === currentIndex">
+                  <input
+                    type="text"
+                    v-model="updatedService"
+                    placeholder="Enter updated service"
+                  />
+                  <button
+                    class="bg-red-700 text-white rounded"
+                    @click="updateService(index)"
+                  >
+                    Save
+                  </button>
+                </div>
               </div>
             </li>
           </ul>
@@ -161,5 +168,3 @@ export default {
     </div>
   </main>
 </template>
-
-
