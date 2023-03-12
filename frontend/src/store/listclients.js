@@ -5,7 +5,7 @@ import { defineStore } from 'pinia'
 export const useClients = defineStore({
   state: () => {
     return {
-      newArrivals: [],
+      Clients: [],
       fetching: false
     }
   },
@@ -23,7 +23,7 @@ export const useClients = defineStore({
   actions: {
     async fetchClients() {
       this.fetching = true;
-      const response = await fetch('/assets/clients.json');
+      const response = await fetch('./assets/clients.json');
       try {
         const result = await response.json();
         this.Clients = result;

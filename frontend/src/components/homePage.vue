@@ -1,8 +1,7 @@
 <script>
 import { DateTime } from 'luxon'
 import axios from 'axios'
-import { ref } from 'vue'
-import { storeToRefs } from 'pinia'
+import { mapActions } from 'pinia'
 import { useClients } from "@/store/listclients";
 import AttendanceChart from './barChart.vue'
 import zipChart from './pieChart.vue'
@@ -18,14 +17,20 @@ export default {
       recentEvents: [],
       labels: [],
       chartData: [],
+      pieLabels: [],
+      pieData: [],
       loading: false,
       error: null
     }
   },
   mounted() {
     this.getAttendanceData()
+    this.getClientData()
   },
   methods: {
+
+    ...mapActions(useClients, ['fetchClients']),
+
     async getAttendanceData() {
       try {
         this.error = null
@@ -70,6 +75,37 @@ export default {
     // method to allow click through table to event details
     editEvent(eventID) {
       this.$router.push({ name: 'eventdetails', params: { id: eventID } })
+    },
+    async getClientData() {
+      try {
+        this.error = null
+        this.loading = true
+        const response = await fetchClients() //Use ListClients' fetchClients action to fetch the client data
+        const allzip = response.map((client) => client.address.zip) // Getting the zip of all clients and putting them in the array allzip
+        const frequency = {}
+        // This for loop counts the number of times each unique zip is in the allzip array, each unique zip and its frequency is added to the frequency object
+        // The code for this for loop comes from the first response in this post -> https://stackoverflow.com/questions/5667888/counting-the-occurrences-frequency-of-array-elements 
+        for (const num of allzip) {
+          frequency[num] = frequency[num] ? frequency[num] + 1 : 1
+        }
+        this.pieLabels = keys(frequency)
+        this.pieData = values(frequency)
+      } catch (err) {
+        if (err.response) {
+          // client received an error response (5xx, 4xx)
+          this.error = {
+            title: 'Server Response',
+            message: err.message
+          }
+        } else {
+          // There's probably an error in your code
+          this.error = {
+            title: 'Application Error',
+            message: err.message
+          }
+        }
+      }
+      this.loading = false
     }
   }
 }
@@ -136,12 +172,13 @@ export default {
               </p>
             </div>
             <!-- End of error alert -->
+
           </div>
           <div>
             <zipChart
               v-if="!loading && !error"
-              :label="labels"
-              :chart-data="chartData"
+              :pieLabel="pieLabels"
+              :pieChartData="pieData"
             ></zipChart>
 
             <!-- Start of loading animation -->

@@ -5,44 +5,25 @@ Chart.register(...registerables)
 
 export default {
   props: {
-    label: {
+    pieLabel: {
       type: Array
     },
-    chartData: {
+    pieChartData: {
       type: Array
     }
   },
   async mounted() {
-    const backgroundColor = this.chartData.map(() => this.getColor())
-    const borderColor = backgroundColor.map((e) =>
-      e.replace(/[\d\.]+\)$/g, '1)')
-    )
     await new Chart(this.$refs.zipChart, {
       type: 'pie',
       data: {
-        labels: this.label,
+        labels: this.pieLabel,
         datasets: [
           {
-            borderWidth: 1,
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            data: this.chartData
+            data: this.pieChartData
           }
         ]
       },
       options: {
-        scales: {
-          y: {
-            ticks: {
-              stepSize: 1
-            }
-          },
-          x: {
-            gridLines: {
-              display: false
-            }
-          }
-        },
         plugins: {
           legend: {
             display: false
@@ -52,12 +33,6 @@ export default {
         maintainAspectRatio: true
       }
     })
-  },
-  methods: {
-    getColor() {
-      let channel = () => Math.random() * 255
-      return `rgba(${channel()}, ${channel()}, ${channel()}, 0.2)`
-    }
   }
 }
 </script>
