@@ -1,8 +1,8 @@
 <script>
 import { DateTime } from 'luxon'
 import axios from 'axios'
-import { mapActions } from 'pinia'
-import { useClientsStore } from "@/store/listclients"
+//import { mapActions } from 'pinia'
+//import { useClientsStore } from "@/store/listclients"
 import AttendanceChart from './barChart.vue'
 import zipChart from './pieChart.vue'
 const apiURL = import.meta.env.VITE_ROOT_API
@@ -21,7 +21,9 @@ export default {
       pieLabels: [],
       pieData: [],
       loading: false,
-      error: null
+      loadingPie: false,
+      errorBar: null,
+      errorPie: null
     }
   },
 
@@ -32,11 +34,11 @@ export default {
 
   methods: {
 
-    ...mapActions(useClientsStore, { getClients: 'fetchClients' }),
+    //...mapActions(useClientsStore, { getClients: 'fetchClients' }),
 
-  async  getAttendanceData() {
+    async getAttendanceData() {
       try {
-        this.error = null
+        this.errorBar = null
         this.loading = true
         const response = await axios.get(`${apiURL}/events/attendance`)
         this.recentEvents = response.data
@@ -47,19 +49,19 @@ export default {
       } catch (err) {
         if (err.response) {
           // client received an error response (5xx, 4xx)
-          this.error = {
+          this.errorBar = {
             title: 'Server Response',
             message: err.message
           }
         } else if (err.request) {
           // client never received a response, or request never left
-          this.error = {
+          this.errorBar = {
             title: 'Unable to Reach Server',
             message: err.message
           }
         } else {
           // There's probably an error in your code
-          this.error = {
+          this.errorBar = {
             title: 'Application Error',
             message: err.message
           }
@@ -84,34 +86,35 @@ export default {
 
     async getClientData() {
       try {
-        this.error = null
-        this.loading = true
-        const response = await this.getClients() //Use ListClients' fetchClients action to fetch the client data
-        const allzip = response.map((client) => client.address.zip) // Getting the zip of all clients and putting them in the array allzip
+        this.errorPie = null
+        this.loadingPie = true
+        const response = await fetch('/data/clients.json') //Since backend isn't set yet, fetch the client data from a file in assets
+        const result = await response.json();
+        const allzip = result.Clients.map(client => client.address.zip) // Getting the zip of all clients and putting them in the array allzip
         const frequency = {}
         // This for loop counts the number of times each unique zip is in the allzip array, each unique zip and its frequency is added to the frequency object
         // The code for this for loop comes from the first response in this post -> https://stackoverflow.com/questions/5667888/counting-the-occurrences-frequency-of-array-elements 
         for (const num of allzip) {
           frequency[num] = frequency[num] ? frequency[num] + 1 : 1
         }
-        this.pieLabels = keys(frequency)
-        this.pieData = values(frequency)
+        this.pieLabels = Object.keys(frequency)
+        this.pieData = Object.values(frequency)
       } catch (err) {
         if (err.response) {
           // client received an error response (5xx, 4xx)
-          this.error = {
+          this.errorPie = {
             title: 'Server Response',
             message: err.message
           }
         } else {
           // There's probably an error in your code
-          this.error = {
+          this.errorPie = {
             title: 'Application Error',
             message: err.message
           }
         }
       }
-      this.loading = false
+      this.loadingPie = false
     }
   }
 }
@@ -153,7 +156,7 @@ export default {
           </table>
           <div>
             <AttendanceChart
-              v-if="!loading && !error"
+              v-if="!loading && !errorBar"
               :label="labels"
               :chart-data="chartData"
             ></AttendanceChart>
@@ -169,12 +172,12 @@ export default {
             <!-- End of loading animation -->
 
             <!-- Start of error alert -->
-            <div class="mt-12 bg-red-50" v-if="error">
+            <div class="mt-12 bg-red-50" v-if="errorBar">
               <h3 class="px-4 py-1 text-4xl font-bold text-white bg-red-800">
-                {{ error.title }}
+                {{ errorBar.title }}
               </h3>
               <p class="p-4 text-lg font-bold text-red-900">
-                {{ error.message }}
+                {{ errorBar.message }}
               </p>
             </div>
             <!-- End of error alert -->
@@ -182,13 +185,13 @@ export default {
           </div>
           <div>
             <zipChart
-              v-if="!loading && !error"
+              v-if="!loadingPie && !errorPie"
               :pieLabel="pieLabels"
               :pieChartData="pieData"
             ></zipChart>
 
             <!-- Start of loading animation -->
-            <div class="mt-40" v-if="loading">
+            <div class="mt-40" v-if="loadingPie">
               <p
                 class="text-6xl font-bold text-center text-gray-500 animate-pulse"
               >
@@ -198,12 +201,12 @@ export default {
             <!-- End of loading animation -->
 
             <!-- Start of error alert -->
-            <div class="mt-12 bg-red-50" v-if="error">
+            <div class="mt-12 bg-red-50" v-if="errorPie">
               <h3 class="px-4 py-1 text-4xl font-bold text-white bg-red-800">
-                {{ error.title }}
+                {{ errorPie.title }}
               </h3>
               <p class="p-4 text-lg font-bold text-red-900">
-                {{ error.message }}
+                {{ errorPie.message }}
               </p>
             </div>
             <!-- End of error alert -->
