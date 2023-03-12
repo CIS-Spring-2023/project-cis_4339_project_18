@@ -2,11 +2,17 @@
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import axios from 'axios'
+import { useLoggedInUserStore } from '@/store/loggedInUser.js'
+import { computed } from 'vue'
 const apiURL = import.meta.env.VITE_ROOT_API
 
 export default {
   setup() {
     return { v$: useVuelidate({ $autoDirty: true }) }
+  },
+  setup() {
+    const user = useLoggedInUserStore();
+    return { user };
   },
   data() {
     return {
@@ -84,10 +90,10 @@ export default {
         <div
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
         >
-          <h2 class="text-2xl font-bold">Add Service</h2>
+          <h2 v-if="user.isLoggedIn && user.isEditor" class="text-2xl font-bold">Add Service</h2>
 
           <!-- form field -->
-          <div class="flex flex-col">
+          <div v-if="user.isLoggedIn && user.isEditor" class="flex flex-col">
             <form @submit.prevent="addService">
               <input
                 type="text"
@@ -114,7 +120,7 @@ export default {
         <div></div>
         <div></div>
         <!-- grid container -->
-        <div
+        <div v-if="user.isLoggedIn && user.isEditor"
           class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
         >
           <h2 class="text-2xl font-bold">Update Service</h2>
@@ -122,6 +128,7 @@ export default {
           <ul>
             <li v-for="(service, index) in services" :key="index">
               {{ service }}
+              <br>
               <button
                 class="bg-red-700 text-white rounded"
                 @click="deleteService(index)"
@@ -154,3 +161,5 @@ export default {
     </div>
   </main>
 </template>
+
+
