@@ -2,7 +2,7 @@
 
 import { defineStore } from 'pinia'
 
-export const useClients = defineStore({
+export const useClientsStore = defineStore('clients',{
   state: () => {
     return {
       Clients: [],
@@ -21,11 +21,11 @@ export const useClients = defineStore({
   },
 
   actions: {
-    async fetchClients() {
+    fetchClients() {
       this.fetching = true;
-      const response = await fetch('./assets/clients.json');
+      const response = fetch('../assets/clients.json');
       try {
-        const result = await response.json();
+        const result = response.json();
         this.Clients = result;
       } catch (err) {
         this.Clients = [];

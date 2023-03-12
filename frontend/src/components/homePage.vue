@@ -2,7 +2,7 @@
 import { DateTime } from 'luxon'
 import axios from 'axios'
 import { mapActions } from 'pinia'
-import { useClients } from "@/store/listclients";
+import { useClientsStore } from "@/store/listclients"
 import AttendanceChart from './barChart.vue'
 import zipChart from './pieChart.vue'
 const apiURL = import.meta.env.VITE_ROOT_API
@@ -12,6 +12,7 @@ export default {
     AttendanceChart,
     zipChart
   },
+
   data() {
     return {
       recentEvents: [],
@@ -23,15 +24,17 @@ export default {
       error: null
     }
   },
+
   mounted() {
     this.getAttendanceData()
     this.getClientData()
   },
+
   methods: {
 
-    ...mapActions(useClients, ['fetchClients']),
+    ...mapActions(useClientsStore, { getClients: 'fetchClients' }),
 
-    async getAttendanceData() {
+  async  getAttendanceData() {
       try {
         this.error = null
         this.loading = true
@@ -64,6 +67,7 @@ export default {
       }
       this.loading = false
     },
+
     formattedDate(datetimeDB) {
       const dt = DateTime.fromISO(datetimeDB, {
         zone: 'utc'
@@ -72,15 +76,17 @@ export default {
         .setZone(DateTime.now().zoneName, { keepLocalTime: true })
         .toLocaleString()
     },
+
     // method to allow click through table to event details
     editEvent(eventID) {
       this.$router.push({ name: 'eventdetails', params: { id: eventID } })
     },
+
     async getClientData() {
       try {
         this.error = null
         this.loading = true
-        const response = await fetchClients() //Use ListClients' fetchClients action to fetch the client data
+        const response = await this.getClients() //Use ListClients' fetchClients action to fetch the client data
         const allzip = response.map((client) => client.address.zip) // Getting the zip of all clients and putting them in the array allzip
         const frequency = {}
         // This for loop counts the number of times each unique zip is in the allzip array, each unique zip and its frequency is added to the frequency object
