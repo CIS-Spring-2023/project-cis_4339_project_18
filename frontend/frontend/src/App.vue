@@ -61,20 +61,7 @@ export default {
               </router-link>
             </li>
             <li>
- Miguel
-              <router-link to="/serviceDetail">
-                <span
-                  style="position: relative; top: 6px"
-                  class="material-icons"
-                  >event</span
-                >
-                Services
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/findclient">
               <router-link v-if="user.isLoggedIn" to="/findclient">
- main
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
