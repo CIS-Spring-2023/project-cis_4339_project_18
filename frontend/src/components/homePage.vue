@@ -20,6 +20,7 @@ export default {
       chartData: [],
       pieLabels: [],
       pieData: [],
+      pieColors: [],
       loading: false,
       loadingPie: false,
       errorBar: null,
@@ -99,6 +100,19 @@ export default {
         }
         this.pieLabels = Object.keys(frequency)
         this.pieData = Object.values(frequency)
+        //Creating background color for each section of the pie chart
+        const colors = []
+        this.pieLabels.forEach(() => {
+          // This code for generating random colors is from the first answer in: https://stackoverflow.com/questions/1484506/random-color-generator 
+          var letters = '0123456789ABCDEF'
+          var color = '#'
+          for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)]
+          }
+          colors.push(color)
+        }
+        )
+        this.pieColors = colors
       } catch (err) {
         if (err.response) {
           // client received an error response (5xx, 4xx)
@@ -188,6 +202,7 @@ export default {
               v-if="!loadingPie && !errorPie"
               :pieLabel="pieLabels"
               :pieChartData="pieData"
+              :pieColor="pieColors"
             ></zipChart>
 
             <!-- Start of loading animation -->

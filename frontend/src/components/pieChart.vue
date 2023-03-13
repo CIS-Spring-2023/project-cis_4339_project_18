@@ -10,6 +10,9 @@ export default {
     },
     pieChartData: {
       type: Array
+    },
+    pieColor: {
+      type: Array
     }
   },
   async mounted() {
@@ -19,14 +22,19 @@ export default {
         labels: this.pieLabel,
         datasets: [
           {
-            data: this.pieChartData
+            data: this.pieChartData,
+            backgroundColor: this.pieColor
           }
         ]
       },
       options: {
         plugins: {
           legend: {
-            display: false
+            display: true
+          },
+          title: {
+            display: true,
+            text: 'Users Grouped by ZIP'
           }
         },
         responsive: true,
