@@ -30,6 +30,11 @@ const routes = [
     component: () => import('../components/eventForm.vue')
   },
   {
+    path: '/serviceDetail',
+    name: 'serviceDetail',
+    component: () => import('../components/serviceDetail.vue')
+  },
+  {
     path: '/findevents',
     name: 'findevents',
     component: () => import('../components/findEvents.vue')
