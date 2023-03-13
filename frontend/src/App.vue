@@ -61,8 +61,7 @@ export default {
               </router-link>
             </li>
             <li>
- Miguel
-              <router-link to="/serviceDetail">
+              <router-link v-if="user.isLoggedIn" to="/serviceDetail">
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
@@ -72,9 +71,7 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link to="/findclient">
               <router-link v-if="user.isLoggedIn" to="/findclient">
- main
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
@@ -139,8 +136,3 @@ export default {
   padding: 18px;
 }
 </style>
-
-
-
-
-
