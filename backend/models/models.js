@@ -135,7 +135,10 @@ const eventDataSchema = new Schema(
 const loginDataSchema = new Schema({
   _id: { type: String, default: uuid.v1 },
   username: String,
-  password: String
+  password: String,
+  role: {
+    type: String
+  },
 });
 
 // hash the password
