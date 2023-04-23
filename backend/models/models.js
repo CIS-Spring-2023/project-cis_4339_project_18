@@ -2,7 +2,7 @@ const uuid = require('uuid')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-// collection for org  hhh
+// collection for org  hh
 const orgDataSchema = new Schema(
   {
     _id: {
