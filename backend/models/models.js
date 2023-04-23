@@ -134,10 +134,6 @@ const eventDataSchema = new Schema(
 // collection for login
 const loginDataSchema = new Schema({
   _id: { type: String, default: uuid.v1 },
-    firstName: {
-      type: String,
-      required: true
-    },
   username: String,
   password: String
 });
