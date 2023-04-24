@@ -133,25 +133,41 @@ const eventDataSchema = new Schema(
 
 // collection for login
 const loginDataSchema = new Schema({
-  _id: { type: String, default: uuid.v1 },
-  username: String,
-  password: String,
+  //_id: { type: String, default: uuid.v1 }, You don't need to create another id, rather just embedd the client id
+  username: {
+      type: String,
+      required: true  //Username and password have to be required
+    },
+  password: {
+      type: String,
+      required: true
+    },
   role: {
-    type: String
+    type: String,
+    required: true
   },
-});
+  clientID: {      //Instead of creating a new id just reference the one from the client collection
+    type: String,
+    required: true,
+    ref: 'client'
+  },
+},
+  {
+    collection: 'login'   //You have to clarify the collection in the database that this schema is refering to
+  }
+);
 
 // hash the password
-userSchema.methods.generateHash = function(password) {
+//Changed to appropriate name of schema (you still had the schema name from the example)
+loginDataSchema.methods.generateHash = function(password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 
 // checking if password is valid
-userSchema.methods.validPassword = function(password) {
+loginDataSchema.methods.validPassword = function(password) {
   return bcrypt.compareSync(password, this.password);
 };
-var User = mongoose.model('user', userSchema);
-module.exports = User;
+
 
 
 
@@ -159,6 +175,6 @@ module.exports = User;
 const clients = mongoose.model('client', clientDataSchema)
 const orgs = mongoose.model('org', orgDataSchema)
 const events = mongoose.model('event', eventDataSchema)
-const login = mongoose.model('org', loginDataSchema)
+const login = mongoose.model('login', loginDataSchema)
 // package the models in an object to export
 module.exports = { clients, orgs, events, login }
