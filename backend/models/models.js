@@ -146,11 +146,11 @@ const loginDataSchema = new Schema({
     type: String,
     required: true
   },
-  clientID: {      //Instead of creating a new id just reference the one from the client collection
-    type: String,
-    required: true,
-    ref: 'client'
-  },
+  client: {      //Instead of creating a new id just reference the one from the client collection
+    _id: { type: String, ref: 'client' },
+    orgs: { type: String, ref: 'client' },
+    required: true
+  }
 },
   {
     collection: 'login'   //You have to clarify the collection in the database that this schema is refering to
