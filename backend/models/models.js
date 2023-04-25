@@ -1,7 +1,7 @@
 const uuid = require('uuid')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt');
 
 
 // collection for org
@@ -148,8 +148,7 @@ const loginDataSchema = new Schema({
   },
   client: {      //Instead of creating a new id just reference the one from the client collection
     _id: { type: String, ref: 'client' },
-    orgs: { type: String, ref: 'client' },
-    required: true
+    orgs: { type: String, ref: 'client' }
   }
 },
   {
