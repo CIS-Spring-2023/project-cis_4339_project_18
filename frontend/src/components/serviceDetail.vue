@@ -1,170 +1,124 @@
 <script>
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
+import { DateTime } from 'luxon'
 import axios from 'axios'
-import { useLoggedInUserStore } from '@/store/loggedInUser.js'
-import { computed } from 'vue'
 const apiURL = import.meta.env.VITE_ROOT_API
 
 export default {
   setup() {
     return { v$: useVuelidate({ $autoDirty: true }) }
   },
-  setup() {
-    const user = useLoggedInUserStore()
-    return { user }
-  },
   data() {
     return {
+      services: [],
       service: {
-        name: ''
-      },
-      services: [
-        'Family Support',
-        'Adult Education',
-        'Youth Services Program',
-        'Early Childhood Education'
-      ],
-      currentIndex: null,
-      updatedService: '',
-      newService: ''
+        
+        service: '',
+        org: ''
+      
+      } // added service property
     }
   },
+  mounted() {
+    this.getServices()
+  },
   methods: {
+    // better formattedDate
     async handleSubmitForm() {
       // Checks to see if there are any errors in validation
       const isFormCorrect = await this.v$.$validate()
       // If no errors found. isFormCorrect = True then the form is submitted
       if (isFormCorrect) {
         axios
-          .post(`${apiURL}/events`, this.event)
+          .post(`${apiURL}/services`, this.v$.$model) // changed this.service to this.v$.$model
           .then(() => {
-            alert('Event has been added.')
-            this.$router.push({ name: 'findevents' })
+            alert('Service has been added.')
+            this.$router.push({ name: 'servicedetail' })
           })
           .catch((error) => {
             console.log(error)
           })
       }
     },
-    deleteService(index) {
-      this.services.splice(index, 1)
-    },
-    showUpdateBox(index) {
-      this.currentIndex = index
-      this.updatedService = this.services[index]
-    },
-    updateService(index) {
-      this.services[index] = this.updatedService
-      this.currentIndex = null
-      this.updatedService = ''
-    },
-    addService() {
-      this.services.push(this.newService)
-      this.newService = ''
-    }
-  },
-  // sets validations for the various data properties
-  validations() {
-    return {
-      service: {
-        name: { required }
+    validations() {
+      return {
+        service: {
+          service: { required },
+          org: { required }
+        }
       }
+    }, // added closing curly brace
+    formattedDate(datetimeDB) {
+      const dt = DateTime.fromISO(datetimeDB, {
+        zone: 'utc'
+      })
+      return dt
+        .setZone(DateTime.now().zoneName, { keepLocalTime: true })
+        .toLocaleString()
+    },
+    // abstracted method to get events
+    getServices() {
+      axios.get(`${apiURL}/services`).then((res) => {
+        this.services = res.data
+      })
+      window.scrollTo(0, 0)
+    },
+    editService(serviceID) {
+      this.$router.push({ name: 'serviceDetail', params: { id: serviceID } })
+    },
+    deleteService(serviceID) {
+      axios.delete(`${apiURL}/services/${serviceID}`).then(() => {
+        this.getServices()
+      })
     }
   }
 }
 </script>
+
 <template>
   <main>
     <div>
       <h1
         class="font-bold text-4xl text-red-700 tracking-widest text-center mt-10"
       >
-        Services
+        List of Services
       </h1>
     </div>
-    <div class="px-10 py-20">
-      <!-- @submit.prevent stops the submit event from reloading the page-->
-      <form @submit.prevent="handleSubmitForm">
-        <!-- grid container -->
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
-        >
-          <h2
-            v-if="user.isLoggedIn && user.isEditor"
-            class="text-2xl font-bold"
-          >
-            Add Service
-          </h2>
 
-          <!-- form field -->
-          <div v-if="user.isLoggedIn && user.isEditor" class="flex flex-col">
-            <form @submit.prevent="addService">
-              <input
-                type="text"
-                v-model="newService"
-                placeholder="Enter new service"
-                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
-              />
-              <button type="submit" class="bg-red-700 text-white rounded">
-                Add Service
-              </button>
-            </form>
-          </div>
-
-          <!-- form field -->
-          <div>
-            <h1>Services</h1>
-            <ul>
-              <li v-for="(service, index) in services" :key="index">
-                {{ service }}
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div></div>
-        <div></div>
-        <!-- grid container -->
-        <div
-          v-if="user.isLoggedIn && user.isEditor"
-          class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
-        >
-          <h2 class="text-2xl font-bold">Update Service</h2>
-          <!-- form field -->
-          <ul>
-            <li v-for="(service, index) in services" :key="index">
-              <div>{{ service }}</div>
-              <div>
-                <button
-                  class="bg-red-700 text-white rounded"
-                  @click="deleteService(index)"
-                >
-                  Delete Service
-                </button>
-                <button
-                  class="bg-red-700 text-white rounded"
-                  @click="showUpdateBox(index)"
-                >
-                  Update Service
-                </button>
-                <div v-if="index === currentIndex">
-                  <input
-                    type="text"
-                    v-model="updatedService"
-                    placeholder="Enter updated service"
-                  />
-                  <button
-                    class="bg-red-700 text-white rounded"
-                    @click="updateService(index)"
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </form>
+    <hr class="mt-10 mb-10" />
+    <!-- Display Found Data -->
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
+    >
+      <div class="ml-10">
+        <h2 class="text-2xl font-bold">List of Services</h2>
+        
+      </div>
+      <div class="flex flex-col col-span-2">
+        <table class="min-w-full shadow-md rounded">
+          <thead class="bg-gray-50 text-xl">
+            <tr>
+              <th class="p-4 text-left">Service Name</th>
+              <th class="p-4 text-left">Service Org</th>
+              <th class="p-4 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-300">
+            <tr
+              v-for="service in services"
+              :key="service._id"
+            >
+              <td class="p-2 text-left">{{ service.service }}</td>
+              <td class="p-2 text-left">{{ service.org }}</td>
+              <td class="p-2 text-left">
+                <button @click="editService(service._id)">Edit</button>
+                <button @click="deleteService(service._id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </main>
 </template>
