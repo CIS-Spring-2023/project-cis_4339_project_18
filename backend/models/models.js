@@ -88,11 +88,9 @@ const eventDataSchema = new Schema(
       type: String,
       required: true
     },
-    services: [
-      {
-        type: String
-      }
-    ],
+    services:[{   //Changed the services field in the events collection to reference the services collection
+      type: String, ref: 'services' 
+    }],    
     date: {
       type: Date,
       required: true
@@ -133,13 +131,17 @@ const eventDataSchema = new Schema(
 const serviceDataSchema = new Schema(
   {
     _id: { type: String, default: uuid.v1 },
-    org: {
+    service_name: {
       type: String,
       required: true
     },
-    service: {
-      type: String,
-      required: true
+    description: {
+      type: String
+    },
+    org: { //Edited the org field to be embedded and reference the org collection
+      type: { type: String, ref: 'org' },
+      required: true,
+      validate: [(org) => org.length > 0, 'needs at least one org']
     }
   },
   {
@@ -151,7 +153,7 @@ const serviceDataSchema = new Schema(
 const clients = mongoose.model('client', clientDataSchema)
 const orgs = mongoose.model('org', orgDataSchema)
 const events = mongoose.model('event', eventDataSchema)
-const services = mongoose.model('service', serviceDataSchema)
+const services = mongoose.model('services', serviceDataSchema)  //Be careful with your spelling of "services" (when referring to the mongoDB collection), sometimes you are typing it as Services, service, or services. The correct spelling is "services" since that's how the collection appears in the database
 
 // package the models in an object to export
 module.exports = { clients, orgs, events, services }
