@@ -12,7 +12,7 @@ export const useLoggedInUserStore = defineStore({
   actions: {
     async login(username, password, role) {
       try {
-        const response = await apiLogin(username, password, role);
+        const response = await axios.post('http://localhost:3000/login', { username, password, role });
         this.$patch({
           isLoggedIn: response.isAllowed,
           isEditor: response.isEditor,
@@ -35,14 +35,10 @@ export const useLoggedInUserStore = defineStore({
 });
 
 function apiLogin(u, p, role) {
-  if (u === "ed" && p === "ed" && role ==="viewer") {
-    return Promise.resolve({ isAllowed: true, isEditor: false, name: "John Doe" });
+  if (role ==="viewer") {
+    return Promise.resolve({ isAllowed: true, isEditor: false });
   }
-  if (u === "ed" && p === "ed" && role ==="editor") {
-    return Promise.resolve({ isAllowed: true, isEditor: true, name: "John Doe" });
+  if (role ==="editor") {
+    return Promise.resolve({ isAllowed: true, isEditor: true });
   }
-  if (p === "ed") {
-    return Promise.resolve({ isAllowed: false });
-  }
-  return Promise.reject(new Error("invalid credentials"));
 }
