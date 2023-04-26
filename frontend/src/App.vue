@@ -1,7 +1,6 @@
 <script>
 import axios from 'axios'
 const apiURL = import.meta.env.VITE_ROOT_API
-import { useLoggedInUserStore } from "@/store/loggedInUser";
 
 export default {
   name: 'App',
@@ -9,10 +8,6 @@ export default {
     return {
       orgName: 'Dataplatform'
     }
-  },
-  setup() {
-    const user = useLoggedInUserStore();
-    return { user };
   },
   created() {
     axios.get(`${apiURL}/org`).then((res) => {
@@ -41,7 +36,7 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link v-if="user.isLoggedIn && user.isEditor" to="/intakeform">
+              <router-link to="/intakeform">
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
@@ -51,7 +46,7 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link v-if="user.isLoggedIn && user.isEditor" to="/eventform">
+              <router-link to="/eventform">
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
@@ -61,7 +56,6 @@ export default {
               </router-link>
             </li>
             <li>
- Miguel
               <router-link to="/serviceDetail">
                 <span
                   style="position: relative; top: 6px"
@@ -72,9 +66,27 @@ export default {
               </router-link>
             </li>
             <li>
+              <router-link to="/newService">
+                <span
+                  style="position: relative; top: 6px"
+                  class="material-icons"
+                  >event</span
+                >
+                New Services
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/updateService">
+                <span
+                  style="position: relative; top: 6px"
+                  class="material-icons"
+                  >event</span
+                >
+                Update Services
+              </router-link>
+            </li>
+            <li>
               <router-link to="/findclient">
-              <router-link v-if="user.isLoggedIn" to="/findclient">
- main
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
@@ -84,7 +96,7 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link v-if="user.isLoggedIn" to="/findevents">
+              <router-link to="/findevents">
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
@@ -92,28 +104,6 @@ export default {
                 >
                 Find Event
               </router-link>
-            </li>
-            <li>
-              <li v-if="user.isLoggedIn">
-                <router-link to="/logout">
-                  <span
-                    style="position: relative; top: 6px"
-                    class="material-icons"
-                    >logout</span
-                  >
-                  Logout
-                </router-link>
-              </li>
-              <li v-else>
-                <router-link to="/login">
-                  <span
-                    style="position: relative; top: 6px"
-                    class="material-icons"
-                    >login</span
-                  >
-                  Login
-                </router-link>
-              </li>
             </li>
           </ul>
         </nav>
@@ -139,8 +129,3 @@ export default {
   padding: 18px;
 }
 </style>
-
-
-
-
-
