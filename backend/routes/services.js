@@ -16,8 +16,7 @@ router.get('/', (req, res, next) => {
         return res.json(data)
       }
     })
-     //You are using a date component but you didn't set up that field in the services schema, however I don't think it's necessary to have a date field since that will be in the event's document which will then reference the service. Basically this won't work because there's no date field in the services schema, either add one or remove this part
-    .sort({ date: 1 })
+    //Removed date order since we don't need it
     .limit(10)
 })
 

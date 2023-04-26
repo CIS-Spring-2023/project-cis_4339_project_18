@@ -1,6 +1,5 @@
 <script>
 import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
 import { DateTime } from 'luxon'
 import axios from 'axios'
 const apiURL = import.meta.env.VITE_ROOT_API
@@ -13,8 +12,8 @@ export default {
     return {
       services: [],
       service: {
-        service: '',
-        org: ''
+        service_name: ''
+        //org is not necessary here
       } // added service property
     }
   },
@@ -22,31 +21,8 @@ export default {
     this.getServices()
   },
   methods: {
+    //Removed unecessary methods that came from the nwService.vue
     // better formattedDate
-    async handleSubmitForm() {
-      // Checks to see if there are any errors in validation
-      const isFormCorrect = await this.v$.$validate()
-      // If no errors found. isFormCorrect = True then the form is submitted
-      if (isFormCorrect) {
-        axios
-          .post(`${apiURL}/services`, this.v$.$model) // changed this.service to this.v$.$model
-          .then(() => {
-            alert('Service has been added.')
-            this.$router.push({ name: 'servicedetail' })
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      }
-    },
-    validations() {
-      return {
-        service: {
-          service: { required },
-          org: { required }
-        }
-      }
-    }, // added closing curly brace
     formattedDate(datetimeDB) {
       const dt = DateTime.fromISO(datetimeDB, {
         zone: 'utc'
@@ -102,7 +78,8 @@ export default {
           </thead>
           <tbody class="divide-y divide-gray-300">
             <tr v-for="service in services" :key="service._id">
-              <td class="p-2 text-left">{{ service.service }}</td>
+              <td class="p-2 text-left">{{ service.service_name }}</td>
+              <!-- Changed it from service.service.service_name to service.service_name so that the actual name of the service would be displayed-->
               <td class="p-2 text-left">
                 <button @click="editService(service._id)">Edit</button>
                 <button @click="deleteService(service._id)">Delete</button>

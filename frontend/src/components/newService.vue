@@ -11,8 +11,9 @@ export default {
   data() {
     return {
       service: {
-        service: '',
-        org: ''
+        service_name: '',
+        description: ''
+        //Added description and removed org
       }
     }
   },
@@ -35,8 +36,7 @@ export default {
   validations() {
     return {
       service: {
-        service: { required },
-        org: { required }
+        service_name: { required }
       }
     }
   }
@@ -64,12 +64,12 @@ export default {
               <input
                 type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                v-model="service.service"
+                v-model="service.service_name"
               />
-              <span class="text-black" v-if="v$.service.service.$error">
+              <span class="text-black" v-if="v$.service.service_name.$error">
                 <p
                   class="text-red-700"
-                  v-for="error of v$.service.service.$errors"
+                  v-for="error of v$.service.service_name.$errors"
                   :key="error.$uid"
                 >
                   {{ error.$message }}!
@@ -79,22 +79,12 @@ export default {
           </div>
           <div class="flex flex-col">
             <label class="block">
-              <span class="text-gray-700">Organization</span>
-              <span style="color: #ff0000">*</span>
+              <span class="text-gray-700">Service Description</span>
               <input
-                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                v-model="service.org"
                 type="text"
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                v-model="service.description"
               />
-              <span class="text-black" v-if="v$.service.org.$error">
-                <p
-                  class="text-red-700"
-                  v-for="error of v$.service.org.$errors"
-                  :key="error.$uid"
-                >
-                  {{ error.$message }}!
-                </p>
-              </span>
             </label>
           </div>
           <div></div>

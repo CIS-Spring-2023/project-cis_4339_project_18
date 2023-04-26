@@ -138,10 +138,10 @@ const serviceDataSchema = new Schema(
     description: {
       type: String
     },
-    org: { //Edited the org field to be embedded and reference the org collection
-      type: { type: String, ref: 'org' },
+    org: { //Edited the org field to be required and work properly
+      type: String, 
       required: true,
-      validate: [(org) => org.length > 0, 'needs at least one org']
+      ref: 'org' 
     }
   },
   {
