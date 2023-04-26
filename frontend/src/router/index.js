@@ -30,9 +30,19 @@ const routes = [
     component: () => import('../components/eventForm.vue')
   },
   {
+    path: '/updateService',
+    name: 'updateService',
+    component: () => import('../components/updateService.vue')
+  },
+  {
+    path: '/newService',
+    name: 'newService',
+    component: () => import('../components/newService.vue')
+  },
+  {
     path: '/serviceDetail',
     name: 'serviceDetail',
-    component: () => import('../components/serviceDetail.vue')
+    component: () => import('../components/serviceDetail2.vue')
   },
   {
     path: '/findevents',
@@ -44,18 +54,6 @@ const routes = [
     name: 'eventdetails',
     props: true,
     component: () => import('../components/eventDetails.vue')
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    props: true,
-    component: () => import('../components/login.vue')
-  },
-  {
-    path: '/logout',
-    name: 'Logout',
-    props: true,
-    component: () => import('../components/logout.vue')
   }
 ]
 const router = createRouter({
