@@ -42,7 +42,7 @@ const routes = [
   {
     path: '/serviceDetail',
     name: 'serviceDetail',
-    component: () => import('../components/serviceDetail2.vue')
+    component: () => import('../components/serviceDetail.vue')
   },
   {
     path: '/findevents',
