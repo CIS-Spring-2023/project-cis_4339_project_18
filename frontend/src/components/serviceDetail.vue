@@ -13,10 +13,8 @@ export default {
     return {
       services: [],
       service: {
-        
         service: '',
         org: ''
-      
       } // added service property
     }
   },
@@ -65,7 +63,7 @@ export default {
       window.scrollTo(0, 0)
     },
     editService(serviceID) {
-      this.$router.push({ name: 'serviceDetail', params: { id: serviceID } })
+      this.$router.push({ name: 'updateService', params: { id: serviceID } })
     },
     deleteService(serviceID) {
       axios.delete(`${apiURL}/services/${serviceID}`).then(() => {
@@ -93,24 +91,18 @@ export default {
     >
       <div class="ml-10">
         <h2 class="text-2xl font-bold">List of Services</h2>
-        
       </div>
       <div class="flex flex-col col-span-2">
         <table class="min-w-full shadow-md rounded">
           <thead class="bg-gray-50 text-xl">
             <tr>
               <th class="p-4 text-left">Service Name</th>
-              <th class="p-4 text-left">Service Org</th>
               <th class="p-4 text-left">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-300">
-            <tr
-              v-for="service in services"
-              :key="service._id"
-            >
+            <tr v-for="service in services" :key="service._id">
               <td class="p-2 text-left">{{ service.service }}</td>
-              <td class="p-2 text-left">{{ service.org }}</td>
               <td class="p-2 text-left">
                 <button @click="editService(service._id)">Edit</button>
                 <button @click="deleteService(service._id)">Delete</button>
