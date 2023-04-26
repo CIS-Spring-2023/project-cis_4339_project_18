@@ -14,37 +14,31 @@ const { login } = require('../models/models')
 //  new_user.save();
 // });
 
-router.post('/login', function(req, res) {
-  login.findOne({username: req.body.username}, function(error, user) {
+//router.post('/login', function(req, res) {
+//  login.findOne({username: req.body.username}, function(error, user) {
 
-    if (!user.validPassword(req.body.password)) {
-      //Added a catch error
-      return next(error)
+  //  if (!user.validPassword(req.body.password)) {
+    //  //Added a catch error
+      //return next(error)
       //password did not match
-    } else {
+    //} else {
       // password matched. proceed forward
       // Set the app.locals.role and app.locals.org to the client's role and org
-      req.app.locals.userId = req.body.role
-      req.app.locals.org = req.body.client.orgs
+    //  req.app.locals.userId = req.body.role
+    //  req.app.locals.org = req.body.client.orgs
       // Then redirect to the dashboard
-      res.redirect('/')
-    }
-  })
-})
+    //  res.redirect('/')
+  //  }
+//  })
+//})
 
 
 
 
 // Anthony code:
 
-const express = require('express')
-const router = express.Router()
-const bcrypt = require('bcrypt')
-// importing data model schemas
-const { login } = require('../models/models')
-
-// GET 10 most recent events for org
-router.get('/', (req, res, next) => {
+// Login validation
+router.get('/login', async (req, res, next) => {
     const username = req.body
     const password = req.body
     const role = req.body
@@ -64,4 +58,4 @@ router.get('/', (req, res, next) => {
         console.error(error);
         return next(error);
         }
-
+      })
