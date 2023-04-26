@@ -2,7 +2,8 @@
 import axios from 'axios'
 const apiURL = import.meta.env.VITE_ROOT_API
 import { useLoggedInUserStore } from "@/store/loggedInUser";
-
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
 
 export default {
   data: () => {
@@ -12,10 +13,17 @@ export default {
       role: "",
     };
   },
+  validations() {
+    return {
+      username: { required },
+      password: { required },
+      role: { required }
+    }
+  },
   setup() {
     const store = useLoggedInUserStore()
     return {
-      // you can return the whole store instance to use it in the template
+      v$: useVuelidate({ $autoDirty: true }),
       store,
     }
   }
