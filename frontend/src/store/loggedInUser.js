@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-
+import axios from 'axios'
+const apiURL = import.meta.env.VITE_ROOT_API
 export const useLoggedInUserStore = defineStore({
   id: 'loggedInUser',
 
@@ -12,7 +13,7 @@ export const useLoggedInUserStore = defineStore({
   actions: {
     async login(username, password, role) {
       try {
-        const response = await axios.post('http://localhost:3000/login', { username, password, role });
+        const response = await axios.post(`${apiURL}/login`, { username, password, role });
         this.$patch({
           isLoggedIn: response.isAllowed,
           isEditor: response.isEditor,
