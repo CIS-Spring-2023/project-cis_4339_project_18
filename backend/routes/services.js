@@ -20,6 +20,20 @@ router.get('/', (req, res, next) => {
     .limit(10)
 })
 
+// Added a get route for a single service by id, probably the main reason update wasn't working before
+router.get('/id/:id', (req, res, next) => {
+  // use findOne instead of find to not return array
+  services.findOne({ _id: req.params.id }, (error, data) => {
+    if (error) {
+      return next(error)
+    } else if (!data) {
+      res.status(400).send('Service not found')
+    } else {
+      res.json(data)
+    }
+  })
+})
+
 // POST new service
 router.post('/', (req, res, next) => {
   const newService = req.body

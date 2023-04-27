@@ -30,8 +30,9 @@ const routes = [
     component: () => import('../components/eventForm.vue')
   },
   {
-    path: '/updateService',
-    name: 'updateService',
+    path: '/updateservice/:id',
+    name: 'updateservice',  //Made sure it's all lowercase and added the :id and probs
+    props: true,
     component: () => import('../components/updateService.vue')
   },
   {

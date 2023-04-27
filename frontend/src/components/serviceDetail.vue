@@ -39,7 +39,7 @@ export default {
       window.scrollTo(0, 0)
     },
     editService(serviceID) {
-      this.$router.push({ name: 'updateService', params: { id: serviceID } })
+      this.$router.push({ name: 'updateservice', params: { id: serviceID } })
     },
     deleteService(serviceID) {
       axios.delete(`${apiURL}/services/${serviceID}`).then(() => {

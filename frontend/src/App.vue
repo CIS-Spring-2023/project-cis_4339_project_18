@@ -65,6 +65,7 @@ export default {
                 Services
               </router-link>
             </li>
+            <!-- Removed the update service tab because it was unecessary-->
             <li>
               <router-link to="/newService">
                 <span
@@ -72,17 +73,7 @@ export default {
                   class="material-icons"
                   >event</span
                 >
-                New Services
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/updateService">
-                <span
-                  style="position: relative; top: 6px"
-                  class="material-icons"
-                  >event</span
-                >
-                Update Services
+                New Service
               </router-link>
             </li>
             <li>
