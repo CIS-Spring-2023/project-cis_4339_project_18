@@ -11,9 +11,9 @@ export const useLoggedInUserStore = defineStore({
   }),
 
   actions: {
-    async login(username, password, role) {
+    async login(username, password) {
       try {
-        const response = await axios.post(`${apiURL}/login`, { username, password, role });
+        const response = await axios.post(`${apiURL}/login`, { username, password});
         this.$patch({
           isLoggedIn: response.isAllowed,
           isEditor: response.isEditor,
@@ -34,12 +34,3 @@ export const useLoggedInUserStore = defineStore({
     }
   }
 });
-
-function apiLogin(u, p, role) {
-  if (role ==="viewer") {
-    return Promise.resolve({ isAllowed: true, isEditor: false });
-  }
-  if (role ==="editor") {
-    return Promise.resolve({ isAllowed: true, isEditor: true });
-  }
-}

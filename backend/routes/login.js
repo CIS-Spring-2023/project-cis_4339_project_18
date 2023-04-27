@@ -1,30 +1,26 @@
 const express = require('express')
 const router = express.Router()
-//const org = process.env.ORG
-const bcrypt = require('bcrypt');
+const org = process.env.ORG
 const { login } = require('../models/models')
 
 // Login validation
 router.post('/', (req, res, next) => {
-    const username = req.body
-    const password = req.body
-    const role = req.body
+    login.findOne({username: req.body.username}, (error, user) => {
 
-    if (!username || !password) {
-        return res.status(400).json({ error: "Username and password are required" });
-    }
-        
-    try {
-        const logged = login.findOne({ username });
-        if (!logged || !(bcrypt.compare(password, logged.password))) {
-        return res.status(400).json({ error: "Incorrect login" });
-        }
-        
-        res.json(logged);
-        } catch (error) {
-        console.error(error);
-        return next(error);
+        if (!user.validPassword(req.body.password)) {
+          //password did not match
+          return next(error)
+        } else if (user.role === 'viewer') {
+          // password matched, role viewer
+          user.isAllowed = true
+          user.isEditor = false
+          return res.json(user)
+        } else {
+            user.isAllowed = true
+            user.isEditor = true
+            return res.json(user) 
         }
       })
+})
 
 module.exports = router
