@@ -13,6 +13,7 @@ export default {
   data() {
     return {
       clientAttendees: [],
+      eventServices: [],
       event: {
         name: '',
         services: [],
@@ -38,6 +39,11 @@ export default {
           this.clientAttendees.push(res.data)
         })
       })
+      this.event.services.forEach((e) => {
+        axios.get(`${apiURL}/services/id/${e}`).then((res) => {
+          this.eventServices.push(res.data)
+        })
+      })
     })
   },
   methods: {
@@ -58,6 +64,9 @@ export default {
     },
     editClient(clientID) {
       this.$router.push({ name: 'updateclient', params: { id: clientID } })
+    },
+    editService(serviceID) {
+      this.$router.push({ name: 'updateservice', params: { id: serviceID } })
     },
     eventDelete() {
       axios.delete(`${apiURL}/events/${this.id}`).then(() => {
@@ -156,58 +165,33 @@ export default {
           <div></div>
           <!-- form field -->
           <div class="flex flex-col grid-cols-3">
-            <label>Services Offered at Event</label>
             <div>
-              <label for="familySupport" class="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  id="familySupport"
-                  value="Family Support"
-                  v-model="event.services"
-                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
-                  notchecked
-                />
-                <span class="ml-2">Family Support</span>
-              </label>
+              <h2 class="text-2xl font-bold">List of Services</h2>
+              <h3 class="italic">Click table row to edit/display an entry</h3>
             </div>
-            <div>
-              <label for="adultEducation" class="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  id="adultEducation"
-                  value="Adult Education"
-                  v-model="event.services"
-                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
-                  notchecked
-                />
-                <span class="ml-2">Adult Education</span>
-              </label>
-            </div>
-            <div>
-              <label for="youthServices" class="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  id="youthServices"
-                  value="Youth Services Program"
-                  v-model="event.services"
-                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
-                  notchecked
-                />
-                <span class="ml-2">Youth Services Program</span>
-              </label>
-            </div>
-            <div>
-              <label for="childhoodEducation" class="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  id="childhoodEducation"
-                  value="Early Childhood Education"
-                  v-model="event.services"
-                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
-                  notchecked
-                />
-                <span class="ml-2">Early Childhood Education</span>
-              </label>
+            <div class="flex flex-col col-span-2">
+              <table class="min-w-full shadow-md rounded">
+                <thead class="bg-gray-50 text-xl">
+                  <tr>
+                    <th class="p-4 text-left">Name</th>
+                    <th class="p-4 text-left">Description</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-300">
+                  <tr
+                    @click="editService(service._id)"
+                    v-for="service in eventServices"
+                    :key="service._id"
+                  >
+                    <td class="p-2 text-left">
+                      {{ service.service_name}}
+                    </td>
+                    <td class="p-2 text-left">
+                      {{ service.description }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
