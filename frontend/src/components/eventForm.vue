@@ -10,7 +10,11 @@ export default {
   },
   data() {
     return {
-      // removed unnecessary extra array to track services
+      // Added extra array to track services
+      servicesALL: [{
+          service_name: '',
+          description: ''
+        }],
       event: {
         name: '',
         services: [{
@@ -26,8 +30,16 @@ export default {
           zip: ''
         },
         description: ''
-      }
+      },
+      ButtonLabel: 'Add Service',
+      Added : false
     }
+  },
+  created() {
+    axios.get(`${apiURL}/services`).then((res) => {
+      // simplified setting servicesAll
+      this.servicesAll = res.data
+    })
   },
   methods: {
     async handleSubmitForm() {
@@ -44,6 +56,17 @@ export default {
           .catch((error) => {
             console.log(error)
           })
+      }
+    },
+    async addService(serviceID) {
+      if (this.Added === false) {
+        this.event.services.push(serviceID)
+        this.ButtonLabel = 'Remove Service'
+        this.Added = true
+      } else {
+        this.event.services.push(serviceID)
+        this.ButtonLabel = 'Add Service'
+        this.Added = false
       }
     }
   },
@@ -145,12 +168,16 @@ export default {
                   <tr>
                     <th class="p-4 text-left">Service Name</th>
                     <th class="p-4 text-left">Description</th>
+                    <th class="p-4 text-left">Actions</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-300">
-                  <tr v-for="service in services" :key="service._id">
+                  <tr v-for="service in servicesALL" :key="service._id">
                     <td class="p-2 text-left">{{ service.service_name }}</td>
                     <td class="p-2 text-left">{{ service.description }}</td>
+                    <td class="p-2 text-left">
+                      <button class="bg-red-700 text-white rounded" @click="addService(service._id)">{{ ButtonLabel }}</button>
+                    </td>
                   </tr>
                 </tbody>
               </table>

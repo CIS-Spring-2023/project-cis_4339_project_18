@@ -6,7 +6,7 @@ const org = process.env.ORG
 // importing data model schemas
 const { services } = require('../models/models')
 
-// GET 10 most recent services for org
+// GET services from org
 router.get('/', (req, res, next) => {
   services
     .find({ org: org }, (error, data) => {
@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
       }
     })
     //Removed date order since we don't need it
-    .limit(10)
+    //.limit(10)
 })
 
 // Added a get route for a single service by id, probably the main reason update wasn't working before
