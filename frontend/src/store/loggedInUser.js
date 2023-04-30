@@ -21,7 +21,7 @@ export const useLoggedInUserStore = defineStore({
         })
         this.$router.push("/");
       } catch(error) {
-        console.log(error)
+        alert("Invalid Credentials")
       }
     },
 // this for the logout to set them to false
