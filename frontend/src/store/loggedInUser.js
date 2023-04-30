@@ -29,7 +29,7 @@ export const useLoggedInUserStore = defineStore({
       this.patch({
         name: "",
         isLoggedIn: false,
-        isEditor: false,
+        role: '',
       });
     }
   }
