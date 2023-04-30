@@ -11,6 +11,7 @@
   </main>
 </template>
 
+
 <style>
 .logout-page {
   display: flex;
@@ -58,7 +59,6 @@ form {
 </style>
 
 
-<!-- this code below takes the user to home screen after logout-->
 <script>
 export default {
   methods: {

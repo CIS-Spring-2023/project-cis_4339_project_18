@@ -90,11 +90,10 @@ const eventDataSchema = new Schema(
       type: String,
       required: true
     },
-    services: [
-      {
-        type: String
-      }
-    ],
+    services:[{   //Changed the services field in the events collection to reference the services collection
+      type: String, 
+      ref: 'services' 
+    }],    
     date: {
       type: Date,
       required: true
@@ -131,6 +130,7 @@ const eventDataSchema = new Schema(
   }
 )
 
+
 // collection for login
 const loginDataSchema = new Schema({
   //_id: { type: String, default: uuid.v1 }, You don't need to create another id, rather just embedd the client id
@@ -152,12 +152,11 @@ const loginDataSchema = new Schema({
   }
 },
   {
-    collection: 'login'   //You have to clarify the collection in the database that this schema is refering to
+    collection: 'login' 
   }
 );
 
 // hash the password
-//Changed to appropriate name of schema (you still had the schema name from the example)
 loginDataSchema.methods.generateHash = function(password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
@@ -170,10 +169,35 @@ loginDataSchema.methods.validPassword = function(password) {
 
 
 
+// collection for services
+const serviceDataSchema = new Schema(
+  {
+    _id: { type: String, default: uuid.v1 },
+    service_name: {
+      type: String,
+      required: true
+    },
+    description: {
+      type: String
+    },
+    org: { //Edited the org field to be required and work properly
+      type: String, 
+      required: true,
+      ref: 'org' 
+    }
+  },
+  {
+    collection: 'services'
+  }
+)
+
+
 // create models from mongoose schemas
 const clients = mongoose.model('client', clientDataSchema)
 const orgs = mongoose.model('org', orgDataSchema)
 const events = mongoose.model('event', eventDataSchema)
+const services = mongoose.model('services', serviceDataSchema)
 const login = mongoose.model('login', loginDataSchema)
+
 // package the models in an object to export
-module.exports = { clients, orgs, events, login }
+module.exports = { clients, orgs, events, services, login }

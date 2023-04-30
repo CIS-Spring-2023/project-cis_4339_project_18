@@ -2,21 +2,16 @@
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import axios from 'axios'
-import { DateTime } from 'luxon'
 const apiURL = import.meta.env.VITE_ROOT_API
 
 export default {
-  props: ['id'],
   setup() {
     return { v$: useVuelidate({ $autoDirty: true }) }
   },
   data() {
     return {
-      servicesALL: [],
-      clientAttendees: [],
-      eventServices: [],
+      // removed unnecessary extra array to track services
       event: {
-        org: '',
         name: '',
         services: [],
         date: '',
@@ -27,63 +22,26 @@ export default {
           county: '',
           zip: ''
         },
-        description: '',
-        attendees: []
+        description: ''
       }
     }
   },
-  created() {
-    axios.get(`${apiURL}/events/id/${this.$route.params.id}`).then((res) => {
-      this.event = res.data
-      this.event.date = this.formattedDate(this.event.date)
-      this.event.attendees.forEach((e) => {
-        axios.get(`${apiURL}/clients/id/${e}`).then((res) => {
-          this.clientAttendees.push(res.data)
-        })
-      })
-      this.event.services.forEach((e) => {
-        axios.get(`${apiURL}/services/id/${e}`).then((res) => {
-          this.eventServices.push(res.data._id)
-        })
-      })
-    }),
-    axios.get(`${apiURL}/services`).then((res) => {
-      this.servicesALL = res.data
-      })
-  },
   methods: {
-    // better formatted date, converts UTC to local time
-    formattedDate(datetimeDB) {
-      const dt = DateTime.fromISO(datetimeDB, {
-        zone: 'utc'
-      })
-      return dt
-        .setZone(DateTime.now().zoneName, { keepLocalTime: true })
-        .toISODate()
-    },
-    handleEventUpdate() {
-      axios.put(`${apiURL}/events/update/${this.id}`, this.event).then(() => {
-        alert('Update has been saved.')
-        this.$router.back()
-      })
-    },
-    editClient(clientID) {
-      this.$router.push({ name: 'updateclient', params: { id: clientID } })
-    },
-    eventDelete() {
-      axios.delete(`${apiURL}/events/${this.id}`).then(() => {
-        alert('Event has been deleted.')
-        this.$router.push({ name: 'findevents' })
-      })
-    },
-    addService(serviceID) {
-        this.event.services.push(serviceID)
-        this.eventServices.push(serviceID)
-    },
-    removeService(serviceID) {
-        var ind = this.eventServices.indexOf(serviceID)
-        this.event.services.splice(ind,1)
-        this.eventServices.splice(ind,1)
+    async handleSubmitForm() {
+      // Checks to see if there are any errors in validation
+      const isFormCorrect = await this.v$.$validate()
+      // If no errors found. isFormCorrect = True then the form is submitted
+      if (isFormCorrect) {
+        axios
+          .post(`${apiURL}/events`, this.event)
+          .then(() => {
+            alert('Event has been added.')
+            this.$router.push({ name: 'findevents' })
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
     }
   },
   // sets validations for the various data properties
@@ -103,15 +61,18 @@ export default {
       <h1
         class="font-bold text-4xl text-red-700 tracking-widest text-center mt-10"
       >
-        Update Event
+        Create New Event
       </h1>
     </div>
     <div class="px-10 py-20">
+      <!-- @submit.prevent stops the submit event from reloading the page-->
       <form @submit.prevent="handleSubmitForm">
+        <!-- grid container -->
         <div
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
         >
           <h2 class="text-2xl font-bold">Event Details</h2>
+
           <!-- form field -->
           <div class="flex flex-col">
             <label class="block">
@@ -140,9 +101,9 @@ export default {
               <span class="text-gray-700">Date</span>
               <span style="color: #ff0000">*</span>
               <input
-                type="date"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 v-model="event.date"
+                type="date"
               />
               <span class="text-black" v-if="v$.event.date.$error">
                 <p
@@ -162,11 +123,9 @@ export default {
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Description</span>
-              <!-- added missing v-model connection -->
               <textarea
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 rows="2"
-                v-model="event.description"
               ></textarea>
             </label>
           </div>
@@ -175,39 +134,59 @@ export default {
           <div></div>
           <div></div>
           <!-- form field -->
-          <div class="flex flex-col col-span-2">
+          <div class="flex flex-col grid-cols-3">
+            <label>Services Offered at Event</label>
             <div>
-              <h2 class="text-2xl font-bold">List of Services</h2>
+              <label for="familySupport" class="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  id="familySupport"
+                  value="Family Support"
+                  v-model="event.services"
+                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
+                  notchecked
+                />
+                <span class="ml-2">Family Support</span>
+              </label>
             </div>
-            <div class="flex flex-col col-span-2">
-              <table class="min-w-full shadow-md rounded">
-                <thead class="bg-gray-50 text-xl">
-                  <tr>
-                    <th class="p-4 text-left">Name</th>
-                    <th class="p-4 text-left">Description</th>
-                    <th class="p-4 text-left">Actions</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-300">
-                  <tr
-                    v-for="service in servicesALL"
-                    :key="service._id"
-                  >
-                    <td class="p-2 text-left">
-                      {{ service.service_name}}
-                    </td>
-                    <td class="p-2 text-left">
-                      {{ service.description }}
-                    </td>
-                    <td class="p-2 text-left" v-if="eventServices.includes(service._id)" >
-                      <button class="bg-red-700 text-white rounded" @click="removeService(service._id)">Remove Service</button>
-                    </td>
-                    <td class="p-2 text-left" v-else>
-                      <button class="bg-green-700 text-white rounded" @click="addService(service._id)">Add Service</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div>
+              <label for="adultEducation" class="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  id="adultEducation"
+                  value="Adult Education"
+                  v-model="event.services"
+                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
+                  notchecked
+                />
+                <span class="ml-2">Adult Education</span>
+              </label>
+            </div>
+            <div>
+              <label for="youthServices" class="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  id="youthServices"
+                  value="Youth Services Program"
+                  v-model="event.services"
+                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
+                  notchecked
+                />
+                <span class="ml-2">Youth Services Program</span>
+              </label>
+            </div>
+            <div>
+              <label for="childhoodEducation" class="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  id="childhoodEducation"
+                  value="Early Childhood Education"
+                  v-model="event.services"
+                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
+                  notchecked
+                />
+                <span class="ml-2">Early Childhood Education</span>
+              </label>
             </div>
           </div>
         </div>
@@ -280,75 +259,10 @@ export default {
           </div>
         </div>
 
-        <!-- grid container -->
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
-        >
-          <div class="flex justify-between mt-10 mr-20">
-            <button
-              @click="handleEventUpdate"
-              type="submit"
-              class="bg-green-700 text-white rounded"
-            >
-              Update Event
-            </button>
-          </div>
-          <div class="flex justify-between mt-10 mr-20">
-            <button
-              @click="eventDelete"
-              type="submit"
-              class="bg-red-700 text-white rounded"
-            >
-              Delete Event
-            </button>
-          </div>
-          <div class="flex justify-between mt-10 mr-20">
-            <button
-              type="reset"
-              class="border border-red-700 bg-white text-red-700 rounded"
-              @click="$router.back()"
-            >
-              Go back
-            </button>
-          </div>
-        </div>
-
-        <hr class="mt-10 mb-10" />
-
-        <!-- grid container -->
-        <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10"
-        >
-          <div>
-            <h2 class="text-2xl font-bold">List of Attendees</h2>
-            <h3 class="italic">Click table row to edit/display an entry</h3>
-          </div>
-          <div class="flex flex-col col-span-2">
-            <table class="min-w-full shadow-md rounded">
-              <thead class="bg-gray-50 text-xl">
-                <tr>
-                  <th class="p-4 text-left">Name</th>
-                  <th class="p-4 text-left">City</th>
-                  <th class="p-4 text-left">Phone Number</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-300">
-                <tr
-                  @click="editClient(client._id)"
-                  v-for="client in clientAttendees"
-                  :key="client._id"
-                >
-                  <td class="p-2 text-left">
-                    {{ client.firstName + ' ' + client.lastName }}
-                  </td>
-                  <td class="p-2 text-left">{{ client.address.city }}</td>
-                  <td class="p-2 text-left">
-                    {{ client.phoneNumber.primary }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="flex justify-between mt-10 mr-20">
+          <button class="bg-red-700 text-white rounded" type="submit">
+            Add New Event
+          </button>
         </div>
       </form>
     </div>

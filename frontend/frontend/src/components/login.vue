@@ -1,32 +1,26 @@
 <script>
 import axios from 'axios'
 const apiURL = import.meta.env.VITE_ROOT_API
-import { useLoggedInUserStore } from "@/store/loggedInUser"
-import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
+import { useLoggedInUserStore } from "@/store/loggedInUser";
 
-//this code takes and stores the username and password
+
 export default {
   data: () => {
     return {
       username: "",
       password: "",
-    }
-  },
-  validations() {
-    return {
-      username: { required },
-      password: { required }
-    }
+      role: "",
+    };
   },
   setup() {
     const store = useLoggedInUserStore()
     return {
-      v$: useVuelidate({ $autoDirty: true }),
+      // you can return the whole store instance to use it in the template
       store,
     }
   }
 };
+
 </script>
 <template>
   <main>
@@ -43,7 +37,19 @@ export default {
             <label for="password">Password:</label>
             <input type="password" id="password" v-model="password" class="form-control">
           </div>
-          <button type="submit" class="btn btn-primary" v-on:click.prevent="store.login(username, password)">Login</button>
+          <div class="form-group">
+            <label for="role">Role:</label>
+            <select id="role" v-model="role" class="form-control">
+              <option value="editor">Editor</option>
+              <option value="viewer">Viewer</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" v-on:click.prevent="store.login(username, password, role === 'editor' ? 'editor' : 'viewer')">Login</button>
+          <div class="message-box">
+            <p>Login Credentials</p>
+            <p>Username: ed</p>
+            <p>Password: ed</p>
+        </div>
         </form>
       </div>
     </div>

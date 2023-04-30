@@ -15,13 +15,9 @@ export default {
     return { user };
   },
   created() {
-    if (this.user.isLoggedIn) {
-      axios.get(`${apiURL}/org`).then((res) => {
-        this.orgName = res.data.name
-      })
-    } else {
-      this.$router.push({ name: 'login'})
-    }
+    axios.get(`${apiURL}/org`).then((res) => {
+      this.orgName = res.data.name
+    })
   }
 }
 </script>
@@ -45,7 +41,7 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link v-if="user.isLoggedIn && user.role === 'editor'" to="/intakeform">
+              <router-link v-if="user.isLoggedIn && user.isEditor" to="/intakeform">
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
@@ -55,34 +51,13 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link v-if="user.isLoggedIn && user.role === 'editor'" to="/eventform">
+              <router-link v-if="user.isLoggedIn && user.isEditor" to="/eventform">
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
                   >event</span
                 >
                 Create Event
-              </router-link>
-            </li>
-            <li>
-              <router-link v-if="user.isLoggedIn" to="/serviceDetail">
-                <span
-                  style="position: relative; top: 6px"
-                  class="material-icons"
-                  >event</span
-                >
-                Services
-              </router-link>
-            </li>
-            <!-- Removed the update service tab because it was unecessary-->
-            <li>
-              <router-link v-if="user.isLoggedIn && user.role === 'editor'" to="/newService">
-                <span
-                  style="position: relative; top: 6px"
-                  class="material-icons"
-                  >event</span
-                >
-                New Service
               </router-link>
             </li>
             <li>

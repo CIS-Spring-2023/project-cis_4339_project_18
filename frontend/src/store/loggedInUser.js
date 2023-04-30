@@ -24,7 +24,7 @@ export const useLoggedInUserStore = defineStore({
         console.log(error)
       }
     },
-
+// this for the logout to set them to false
     logout() {
       this.patch({
         name: "",

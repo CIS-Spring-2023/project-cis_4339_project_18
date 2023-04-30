@@ -12,11 +12,8 @@ export default {
   },
   data() {
     return {
-      servicesALL: [],
       clientAttendees: [],
-      eventServices: [],
       event: {
-        org: '',
         name: '',
         services: [],
         date: '',
@@ -41,15 +38,7 @@ export default {
           this.clientAttendees.push(res.data)
         })
       })
-      this.event.services.forEach((e) => {
-        axios.get(`${apiURL}/services/id/${e}`).then((res) => {
-          this.eventServices.push(res.data._id)
-        })
-      })
-    }),
-    axios.get(`${apiURL}/services`).then((res) => {
-      this.servicesALL = res.data
-      })
+    })
   },
   methods: {
     // better formatted date, converts UTC to local time
@@ -75,15 +64,6 @@ export default {
         alert('Event has been deleted.')
         this.$router.push({ name: 'findevents' })
       })
-    },
-    addService(serviceID) {
-        this.event.services.push(serviceID)
-        this.eventServices.push(serviceID)
-    },
-    removeService(serviceID) {
-        var ind = this.eventServices.indexOf(serviceID)
-        this.event.services.splice(ind,1)
-        this.eventServices.splice(ind,1)
     }
   },
   // sets validations for the various data properties
@@ -175,39 +155,59 @@ export default {
           <div></div>
           <div></div>
           <!-- form field -->
-          <div class="flex flex-col col-span-2">
+          <div class="flex flex-col grid-cols-3">
+            <label>Services Offered at Event</label>
             <div>
-              <h2 class="text-2xl font-bold">List of Services</h2>
+              <label for="familySupport" class="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  id="familySupport"
+                  value="Family Support"
+                  v-model="event.services"
+                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
+                  notchecked
+                />
+                <span class="ml-2">Family Support</span>
+              </label>
             </div>
-            <div class="flex flex-col col-span-2">
-              <table class="min-w-full shadow-md rounded">
-                <thead class="bg-gray-50 text-xl">
-                  <tr>
-                    <th class="p-4 text-left">Name</th>
-                    <th class="p-4 text-left">Description</th>
-                    <th class="p-4 text-left">Actions</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-300">
-                  <tr
-                    v-for="service in servicesALL"
-                    :key="service._id"
-                  >
-                    <td class="p-2 text-left">
-                      {{ service.service_name}}
-                    </td>
-                    <td class="p-2 text-left">
-                      {{ service.description }}
-                    </td>
-                    <td class="p-2 text-left" v-if="eventServices.includes(service._id)" >
-                      <button class="bg-red-700 text-white rounded" @click="removeService(service._id)">Remove Service</button>
-                    </td>
-                    <td class="p-2 text-left" v-else>
-                      <button class="bg-green-700 text-white rounded" @click="addService(service._id)">Add Service</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div>
+              <label for="adultEducation" class="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  id="adultEducation"
+                  value="Adult Education"
+                  v-model="event.services"
+                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
+                  notchecked
+                />
+                <span class="ml-2">Adult Education</span>
+              </label>
+            </div>
+            <div>
+              <label for="youthServices" class="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  id="youthServices"
+                  value="Youth Services Program"
+                  v-model="event.services"
+                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
+                  notchecked
+                />
+                <span class="ml-2">Youth Services Program</span>
+              </label>
+            </div>
+            <div>
+              <label for="childhoodEducation" class="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  id="childhoodEducation"
+                  value="Early Childhood Education"
+                  v-model="event.services"
+                  class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
+                  notchecked
+                />
+                <span class="ml-2">Early Childhood Education</span>
+              </label>
             </div>
           </div>
         </div>
