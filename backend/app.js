@@ -29,6 +29,10 @@ mongoose
 // declare port number for the api
 const PORT = process.env.PORT || 3000
 
+// Setting up app.locals that will be uses to identify the user that is currently signed in
+//app.locals.role = 0;
+//app.locals.org = 0;
+
 // setup and access request body
 app.use(express.json())
 app.use(morgan('dev'))
@@ -36,8 +40,10 @@ app.use(morgan('dev'))
 // setup middle ware for routes
 app.use('/clients', require('./routes/clients'))
 app.use('/events', require('./routes/events'))
+app.use('/login', require('./routes/login'))
 app.use('/services', require('./routes/services')) //Middle ware for services
 app.use('/org', require('./routes/org')) 
+
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)
