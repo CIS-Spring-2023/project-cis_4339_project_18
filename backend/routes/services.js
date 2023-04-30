@@ -6,7 +6,7 @@ const org = process.env.ORG
 // importing data model schemas
 const { services } = require('../models/models')
 
-// GET services from org
+// GET all services from an org
 router.get('/', (req, res, next) => {
   services
     .find({ org: org }, (error, data) => {
@@ -18,7 +18,7 @@ router.get('/', (req, res, next) => {
     })
 })
 
-// Added a get route for a single service by id, probably the main reason update wasn't working before
+// GET route for a single service by id
 router.get('/id/:id', (req, res, next) => {
   // use findOne instead of find to not return array
   services.findOne({ _id: req.params.id }, (error, data) => {

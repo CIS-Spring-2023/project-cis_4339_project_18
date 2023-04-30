@@ -13,7 +13,6 @@ export default {
       service: {
         service_name: '',
         description: ''
-        //Added description and removed org
       }
     }
   },

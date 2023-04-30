@@ -20,6 +20,7 @@ export default {
         this.orgName = res.data.name
       })
     } else {
+      //If user isn't logged in, they are redirected to the login page
       this.$router.push({ name: 'login'})
     }
   }
@@ -45,6 +46,7 @@ export default {
               </router-link>
             </li>
             <li>
+              <!--If user is logged in and their role is editor they can see and visit the Client Intake Form tab-->
               <router-link v-if="user.isLoggedIn && user.role === 'editor'" to="/intakeform">
                 <span
                   style="position: relative; top: 6px"
@@ -55,6 +57,7 @@ export default {
               </router-link>
             </li>
             <li>
+              <!--If user is logged in and their role is editor they can see and visit the Create Event tab-->              
               <router-link v-if="user.isLoggedIn && user.role === 'editor'" to="/eventform">
                 <span
                   style="position: relative; top: 6px"

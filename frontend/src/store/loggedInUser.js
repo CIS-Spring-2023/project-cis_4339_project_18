@@ -15,12 +15,14 @@ export const useLoggedInUserStore = defineStore({
       try {
         const response = await axios.post(`${apiURL}/login`, {username, password});
         this.$patch({
+        //If login POST goes through, the user is logged in and their role is stored in the role
           isLoggedIn: true,
           role: response.data.role,
           name: response.data.username,
         })
         this.$router.push("/");
       } catch(error) {
+        //If wrong username or password, an alert tells the user their creditials are wrong
         alert("Invalid Credentials")
       }
     },

@@ -23,10 +23,9 @@ export default {
     }
   },
   mounted() {
-    this.getServices()
+    this.getServices() //Use the getServices method, which get all the org services from the database, once template in mounted
   },
   methods: {
-    //Removed unecessary methods that came from the nwService.vue
     // better formattedDate
     formattedDate(datetimeDB) {
       const dt = DateTime.fromISO(datetimeDB, {
@@ -36,7 +35,7 @@ export default {
         .setZone(DateTime.now().zoneName, { keepLocalTime: true })
         .toLocaleString()
     },
-    // abstracted method to get events
+    // abstracted method to get services
     getServices() {
       axios.get(`${apiURL}/services`).then((res) => {
         this.services = res.data
@@ -44,9 +43,11 @@ export default {
       window.scrollTo(0, 0)
     },
     editService(serviceID) {
+      //Redirects user to the updateservice page if they click on the Edit button of a service
       this.$router.push({ name: 'updateservice', params: { id: serviceID } })
     },
     deleteService(serviceID) {
+      //Deletes a service if Delete button is clicked
       axios.delete(`${apiURL}/services/${serviceID}`).then(() => {
         this.getServices()
       })
@@ -84,7 +85,7 @@ export default {
           <tbody class="divide-y divide-gray-300">
             <tr v-for="service in services" :key="service._id">
               <td class="p-2 text-left">{{ service.service_name }}</td>
-              <!-- Changed it from service.service.service_name to service.service_name so that the actual name of the service would be displayed-->
+              <!--If user is logged in and their role is editor they can see and interact with the Edit adn Delete buttons in the Actions column-->
               <td class="p-2 text-left" v-if="user.isLoggedIn && user.role === 'editor'">
                 <button @click="editService(service._id)">Edit</button>
                 <button @click="deleteService(service._id)">Delete</button>
