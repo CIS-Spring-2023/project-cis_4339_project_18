@@ -2,11 +2,16 @@
 import useVuelidate from '@vuelidate/core'
 import { DateTime } from 'luxon'
 import axios from 'axios'
+import { useLoggedInUserStore } from "@/store/loggedInUser";
 const apiURL = import.meta.env.VITE_ROOT_API
 
 export default {
   setup() {
-    return { v$: useVuelidate({ $autoDirty: true }) }
+    const user = useLoggedInUserStore()
+    return {
+      v$: useVuelidate({ $autoDirty: true }),
+      user,
+    }
   },
   data() {
     return {
@@ -73,14 +78,14 @@ export default {
           <thead class="bg-gray-50 text-xl">
             <tr>
               <th class="p-4 text-left">Service Name</th>
-              <th class="p-4 text-left">Actions</th>
+              <th class="p-4 text-left" v-if="user.isLoggedIn && user.role === 'editor'">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-300">
             <tr v-for="service in services" :key="service._id">
               <td class="p-2 text-left">{{ service.service_name }}</td>
               <!-- Changed it from service.service.service_name to service.service_name so that the actual name of the service would be displayed-->
-              <td class="p-2 text-left">
+              <td class="p-2 text-left" v-if="user.isLoggedIn && user.role === 'editor'">
                 <button @click="editService(service._id)">Edit</button>
                 <button @click="deleteService(service._id)">Delete</button>
               </td>

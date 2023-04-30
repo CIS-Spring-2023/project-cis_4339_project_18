@@ -29,10 +29,6 @@ mongoose
 // declare port number for the api
 const PORT = process.env.PORT || 3000
 
-// Setting up app.locals that will be uses to identify the user that is currently signed in
-//app.locals.role = 0;
-//app.locals.org = 0;
-
 // setup and access request body
 app.use(express.json())
 app.use(morgan('dev'))

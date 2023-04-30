@@ -1,9 +1,14 @@
 <script>
 import { DateTime } from 'luxon'
 import axios from 'axios'
+import { useLoggedInUserStore } from "@/store/loggedInUser"
 const apiURL = import.meta.env.VITE_ROOT_API
 
 export default {
+  setup() {
+    const user = useLoggedInUserStore()
+    return {user}
+  },
   data() {
     return {
       events: [],
@@ -53,7 +58,9 @@ export default {
       this.getEvents()
     },
     editEvent(eventID) {
-      this.$router.push({ name: 'eventdetails', params: { id: eventID } })
+      if (this.user.role === 'editor') {
+        this.$router.push({ name: 'eventdetails', params: { id: eventID } })
+      }
     }
   }
 }
