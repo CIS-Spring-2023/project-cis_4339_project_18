@@ -12,9 +12,11 @@ export default {
   },
   data() {
     return {
+      servicesALL: [],
       clientAttendees: [],
       eventServices: [],
       event: {
+        org: '',
         name: '',
         services: [],
         date: '',
@@ -41,10 +43,13 @@ export default {
       })
       this.event.services.forEach((e) => {
         axios.get(`${apiURL}/services/id/${e}`).then((res) => {
-          this.eventServices.push(res.data)
+          this.eventServices.push(res.data._id)
         })
       })
-    })
+    }),
+    axios.get(`${apiURL}/services`).then((res) => {
+      this.servicesALL = res.data
+      })
   },
   methods: {
     // better formatted date, converts UTC to local time
@@ -65,14 +70,20 @@ export default {
     editClient(clientID) {
       this.$router.push({ name: 'updateclient', params: { id: clientID } })
     },
-    editService(serviceID) {
-      this.$router.push({ name: 'updateservice', params: { id: serviceID } })
-    },
     eventDelete() {
       axios.delete(`${apiURL}/events/${this.id}`).then(() => {
         alert('Event has been deleted.')
         this.$router.push({ name: 'findevents' })
       })
+    },
+    addService(serviceID) {
+        this.event.services.push(serviceID)
+        this.eventServices.push(serviceID)
+    },
+    removeService(serviceID) {
+        var ind = this.eventServices.indexOf(serviceID)
+        this.event.services.splice(ind,1)
+        this.eventServices.splice(ind,1)
     }
   },
   // sets validations for the various data properties
@@ -164,10 +175,9 @@ export default {
           <div></div>
           <div></div>
           <!-- form field -->
-          <div class="flex flex-col grid-cols-3">
+          <div class="flex flex-col col-span-2">
             <div>
               <h2 class="text-2xl font-bold">List of Services</h2>
-              <h3 class="italic">Click table row to edit/display an entry</h3>
             </div>
             <div class="flex flex-col col-span-2">
               <table class="min-w-full shadow-md rounded">
@@ -175,12 +185,12 @@ export default {
                   <tr>
                     <th class="p-4 text-left">Name</th>
                     <th class="p-4 text-left">Description</th>
+                    <th class="p-4 text-left">Actions</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-300">
                   <tr
-                    @click="editService(service._id)"
-                    v-for="service in eventServices"
+                    v-for="service in servicesALL"
                     :key="service._id"
                   >
                     <td class="p-2 text-left">
@@ -188,6 +198,12 @@ export default {
                     </td>
                     <td class="p-2 text-left">
                       {{ service.description }}
+                    </td>
+                    <td class="p-2 text-left" v-if="eventServices.includes(service._id)" >
+                      <button class="bg-red-700 text-white rounded" @click="removeService(service._id)">Remove Service</button>
+                    </td>
+                    <td class="p-2 text-left" v-else>
+                      <button class="bg-green-700 text-white rounded" @click="addService(service._id)">Add Service</button>
                     </td>
                   </tr>
                 </tbody>

@@ -16,8 +16,6 @@ router.get('/', (req, res, next) => {
         return res.json(data)
       }
     })
-    //Removed date order since we don't need it
-    //.limit(10)
 })
 
 // Added a get route for a single service by id, probably the main reason update wasn't working before

@@ -89,7 +89,8 @@ const eventDataSchema = new Schema(
       required: true
     },
     services:[{   //Changed the services field in the events collection to reference the services collection
-      type: String, ref: 'services' 
+      type: String, 
+      ref: 'services' 
     }],    
     date: {
       type: Date,

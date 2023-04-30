@@ -10,17 +10,10 @@ export default {
   },
   data() {
     return {
-      // Added extra array to track services
-      servicesALL: [{
-          service_name: '',
-          description: ''
-        }],
       event: {
+        org: '',
         name: '',
-        services: [{
-          service_name: '',
-          description: ''
-        }],
+        services: [],
         date: '',
         address: {
           line1: '',
@@ -30,16 +23,8 @@ export default {
           zip: ''
         },
         description: ''
-      },
-      ButtonLabel: 'Add Service',
-      Added : false
+      }
     }
-  },
-  created() {
-    axios.get(`${apiURL}/services`).then((res) => {
-      // simplified setting servicesAll
-      this.servicesAll = res.data
-    })
   },
   methods: {
     async handleSubmitForm() {
@@ -49,24 +34,12 @@ export default {
       if (isFormCorrect) {
         axios
           .post(`${apiURL}/events`, this.event)
-          .then(() => {
-            alert('Event has been added.')
-            this.$router.push({ name: 'findevents' })
+          .then((res) => {
+            this.$router.push({ name: 'eventservices', params: { id: res.data._id }})
           })
           .catch((error) => {
             console.log(error)
           })
-      }
-    },
-    async addService(serviceID) {
-      if (this.Added === false) {
-        this.event.services.push(serviceID)
-        this.ButtonLabel = 'Remove Service'
-        this.Added = true
-      } else {
-        this.event.services.push(serviceID)
-        this.ButtonLabel = 'Add Service'
-        this.Added = false
       }
     }
   },
@@ -159,30 +132,6 @@ export default {
           <div></div>
           <div></div>
           <div></div>
-          <!-- form field -->
-          <div class="flex flex-col grid-cols-3">
-            <label>Services Offered at Event</label>
-            <div class="flex flex-col col-span-2">
-              <table class="min-w-full shadow-md rounded">
-                <thead class="bg-gray-50 text-xl">
-                  <tr>
-                    <th class="p-4 text-left">Service Name</th>
-                    <th class="p-4 text-left">Description</th>
-                    <th class="p-4 text-left">Actions</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-300">
-                  <tr v-for="service in servicesALL" :key="service._id">
-                    <td class="p-2 text-left">{{ service.service_name }}</td>
-                    <td class="p-2 text-left">{{ service.description }}</td>
-                    <td class="p-2 text-left">
-                      <button class="bg-red-700 text-white rounded" @click="addService(service._id)">{{ ButtonLabel }}</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
 
         <!-- grid container -->
