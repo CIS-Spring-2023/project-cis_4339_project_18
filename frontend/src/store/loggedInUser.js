@@ -7,7 +7,7 @@ export const useLoggedInUserStore = defineStore({
   state: () => ({
     name: "",
     isLoggedIn: false,
-    isEditor: false,
+    role: '',
   }),
 
   actions: {
@@ -15,9 +15,9 @@ export const useLoggedInUserStore = defineStore({
       try {
         const response = await axios.post(`${apiURL}/login`, { username, password});
         this.$patch({
-          isLoggedIn: response.isAllowed,
-          isEditor: response.isEditor,
-          name: response.name,
+          isLoggedIn: true,
+          role: response.data.role,
+          name: response.data.username,
         })
         this.$router.push("/");
       } catch(error) {

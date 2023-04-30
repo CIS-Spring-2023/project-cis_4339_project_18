@@ -15,9 +15,13 @@ export default {
     return { user };
   },
   created() {
-    axios.get(`${apiURL}/org`).then((res) => {
-      this.orgName = res.data.name
-    })
+    if (this.user.isLoggedIn) {
+      axios.get(`${apiURL}/org`).then((res) => {
+        this.orgName = res.data.name
+      })
+    } else {
+      this.$router.push({ name: 'login'})
+    }
   }
 }
 </script>
@@ -41,7 +45,7 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link v-if="user.isLoggedIn && user.isEditor" to="/intakeform">
+              <router-link v-if="user.isLoggedIn && user.role === 'editor'" to="/intakeform">
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
@@ -51,7 +55,7 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link v-if="user.isLoggedIn && user.isEditor" to="/eventform">
+              <router-link v-if="user.isLoggedIn && user.role === 'editor'" to="/eventform">
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
