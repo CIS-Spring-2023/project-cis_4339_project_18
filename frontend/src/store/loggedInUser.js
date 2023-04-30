@@ -13,7 +13,7 @@ export const useLoggedInUserStore = defineStore({
   actions: {
     async login(username, password) {
       try {
-        const response = await axios.post(`${apiURL}/login`, { username, password});
+        const response = await axios.post(`${apiURL}/login`, {username, password});
         this.$patch({
           isLoggedIn: true,
           role: response.data.role,
