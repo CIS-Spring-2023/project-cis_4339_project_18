@@ -1,8 +1,6 @@
 <script>
 import { DateTime } from 'luxon'
 import axios from 'axios'
-//import { mapActions } from 'pinia'
-//import { useClientsStore } from "@/store/listclients"
 import AttendanceChart from './barChart.vue'
 import zipChart from './pieChart.vue'
 const apiURL = import.meta.env.VITE_ROOT_API
@@ -34,20 +32,16 @@ export default {
   },
 
   methods: {
-
-    //...mapActions(useClientsStore, { getClients: 'fetchClients' }),
-
     async getAttendanceData() {
       try {
         this.errorBar = null
         this.loading = true
-        const response = await fetch('/data/events.json')  // Since backend is not set yet getting data from json file
-        const result = await response.json();
-        this.recentEvents = result.Attendance
-        this.labels = result.Attendance.map(
+        const response = await axios.get(`${apiURL}/events/attendance`)
+        this.recentEvents = response.data
+        this.labels = response.data.map(
           (item) => `${item.name} (${this.formattedDate(item.date)})`
         )
-        this.chartData = result.Attendance.map((item) => item.attendees)
+        this.chartData = response.data.map((item) => item.attendees.length)
       } catch (err) {
         if (err.response) {
           // client received an error response (5xx, 4xx)
@@ -90,9 +84,8 @@ export default {
       try {
         this.errorPie = null
         this.loadingPie = true
-        const response = await fetch('/data/clients.json') //Since backend isn't set yet, fetch the client data from a file in assets. Tried to fetch data using the listclients.js store but couldn't manage to load the data. 
-        const result = await response.json();
-        const allzip = result.Clients.map(client => client.address.zip) // Getting the zip of all clients and putting them in the array allzip
+        const response = await axios.get(`${apiURL}/clients`) 
+        const allzip = response.data.map(client => client.address.zip) // Getting the zip of all clients and putting them in the array allzip
         const frequency = {}
         // This for loop counts the number of times each unique zip is in the allzip array, each unique zip and its frequency is added to the frequency object
         // The code for this for loop comes from the first response in this post -> https://stackoverflow.com/questions/5667888/counting-the-occurrences-frequency-of-array-elements 
@@ -165,7 +158,7 @@ export default {
               >
                 <td class="p-2 text-left">{{ event.name }}</td>
                 <td class="p-2 text-left">{{ formattedDate(event.date) }}</td>
-                <td class="p-2 text-left">{{ event.attendees }}</td>
+                <td class="p-2 text-left">{{ event.attendees.length }}</td>
               </tr>
             </tbody>
           </table>

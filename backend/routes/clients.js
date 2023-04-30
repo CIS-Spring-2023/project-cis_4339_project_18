@@ -6,7 +6,7 @@ const org = process.env.ORG
 // importing data model schemas
 const { clients } = require('../models/models')
 
-// GET 10 most recent clients for org
+// GET clients for org
 router.get('/', (req, res, next) => {
   clients
     .find({ orgs: org }, (error, data) => {
@@ -17,7 +17,6 @@ router.get('/', (req, res, next) => {
       }
     })
     .sort({ updatedAt: -1 })
-    .limit(10)
 })
 
 // GET single client by ID
