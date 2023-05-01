@@ -26,15 +26,6 @@ export default {
     this.getServices() //Use the getServices method, which get all the org services from the database, once template in mounted
   },
   methods: {
-    // better formattedDate
-    formattedDate(datetimeDB) {
-      const dt = DateTime.fromISO(datetimeDB, {
-        zone: 'utc'
-      })
-      return dt
-        .setZone(DateTime.now().zoneName, { keepLocalTime: true })
-        .toLocaleString()
-    },
     // abstracted method to get services
     getServices() {
       axios.get(`${apiURL}/services`).then((res) => {
