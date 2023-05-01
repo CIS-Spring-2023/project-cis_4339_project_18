@@ -1,7 +1,8 @@
 const uuid = require('uuid')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+
 
 // collection for org
 const orgDataSchema = new Schema(
@@ -89,13 +90,10 @@ const eventDataSchema = new Schema(
       type: String,
       required: true
     },
-    services: [
-      {
-        //Changed the services field in the events collection to reference the services collection
-        type: String,
-        ref: 'services'
-      }
-    ],
+    services:[{   //Changed the services field in the events collection to reference the services collection
+      type: String, 
+      ref: 'services' 
+    }],    
     date: {
       type: Date,
       required: true
@@ -132,42 +130,43 @@ const eventDataSchema = new Schema(
   }
 )
 
+
 // collection for login
-const loginDataSchema = new Schema(
-  {
-    //_id: { type: String, default: uuid.v1 }, You don't need to create another id, rather just embedd the client id
-    username: {
+const loginDataSchema = new Schema({
+  //_id: { type: String, default: uuid.v1 }, You don't need to create another id, rather just embedd the client id
+  username: {
       type: String,
-      required: true //Username and password have to be required
+      required: true  //Username and password have to be required
     },
-    password: {
-      type: String,
-      required: true
-    },
-    role: {
+  password: {
       type: String,
       required: true
     },
-    client: {
-      //Instead of creating a new id just reference the one from the client collection
-      _id: { type: String, ref: 'client' },
-      orgs: { type: String, ref: 'client' }
-    }
+  role: {
+    type: String,
+    required: true
   },
-  {
-    collection: 'login'
+  client: {      //Instead of creating a new id just reference the one from the client collection
+    _id: { type: String, ref: 'client' },
+    orgs: { type: String, ref: 'client' }
   }
-)
+},
+  {
+    collection: 'login' 
+  }
+);
 
 // hash the password
-loginDataSchema.methods.generateHash = function (password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null)
-}
+loginDataSchema.methods.generateHash = function(password) {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+};
 
 // checking if password is valid
-loginDataSchema.methods.validPassword = function (password) {
-  return bcrypt.compareSync(password, this.password)
-}
+loginDataSchema.methods.validPassword = function(password) {
+  return bcrypt.compareSync(password, this.password);
+};
+
+
 
 
 // collection for services
@@ -181,11 +180,10 @@ const serviceDataSchema = new Schema(
     description: {
       type: String
     },
-    org: {
-      //Edited the org field to be required and work properly
-      type: String,
+    org: { //Edited the org field to be required and work properly
+      type: String, 
       required: true,
-      ref: 'org'
+      ref: 'org' 
     }
   },
   {

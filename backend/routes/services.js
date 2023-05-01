@@ -6,7 +6,6 @@ const org = process.env.ORG
 // importing data model schemas
 const { services } = require('../models/models')
 
-
 // GET all services from an org
 router.get('/', (req, res, next) => {
   services

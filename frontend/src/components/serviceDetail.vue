@@ -23,7 +23,7 @@ export default {
     }
   },
   mounted() {
-    this.getServices() //Use the getServices method, which gets all the org services from the database, once template in mounted
+    this.getServices() //Use the getServices method, which get all the org services from the database, once template in mounted
   },
   methods: {
     // better formattedDate
