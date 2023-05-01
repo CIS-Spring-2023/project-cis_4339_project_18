@@ -4,6 +4,7 @@ const apiURL = import.meta.env.VITE_ROOT_API
 import { useLoggedInUserStore } from "@/store/loggedInUser"
 import useVuelidate from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
+
 //this code takes and stores the username and password
 export default {
   data: () => {
@@ -57,6 +58,7 @@ export default {
   height: 100vh;
   background-color: #f1f1f1;
 }
+
 .login-form {
   width: 400px;
   padding: 40px;
@@ -64,26 +66,31 @@ export default {
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
+
 h1 {
   margin-top: 0;
   margin-bottom: 20px;
   font-size: 2.5rem;
   text-align: center;
 }
+
 form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
+
 .form-group {
   display: flex;
   flex-direction: column;
 }
+
 label {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 5px;
 }
+
 .form-control {
   padding: 10px;
   font-size: 1.2rem;
@@ -91,11 +98,13 @@ label {
   border-radius: 5px;
   transition: border-color 0.2s ease-in-out;
 }
+
 .form-control:focus {
   outline: none;
   border-color: #0069d9;
   box-shadow: 0 0 5px rgba(0, 105, 217, 0.5);
 }
+
 .btn {
   padding: 10px 20px;
   font-size: 1.2rem;
@@ -106,6 +115,7 @@ label {
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 }
+
 .btn:hover {
   background-color: #0051a8;
 }

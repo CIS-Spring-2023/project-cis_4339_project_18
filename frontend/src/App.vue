@@ -15,9 +15,14 @@ export default {
     return { user };
   },
   created() {
-    axios.get(`${apiURL}/org`).then((res) => {
-      this.orgName = res.data.name
-    })
+    if (this.user.isLoggedIn) {
+      axios.get(`${apiURL}/org`).then((res) => {
+        this.orgName = res.data.name
+      })
+    } else {
+      //If user isn't logged in, they are redirected to the login page
+      this.$router.push({ name: 'login'})
+    }
   }
 }
 </script>
@@ -41,7 +46,8 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link v-if="user.isLoggedIn && user.isEditor" to="/intakeform">
+              <!--If user is logged in and their role is editor they can see and visit the Client Intake Form tab-->
+              <router-link v-if="user.isLoggedIn && user.role === 'editor'" to="/intakeform">
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
@@ -51,7 +57,8 @@ export default {
               </router-link>
             </li>
             <li>
-              <router-link v-if="user.isLoggedIn && user.isEditor" to="/eventform">
+              <!--If user is logged in and their role is editor they can see and visit the Create Event tab-->              
+              <router-link v-if="user.isLoggedIn && user.role === 'editor'" to="/eventform">
                 <span
                   style="position: relative; top: 6px"
                   class="material-icons"
@@ -68,6 +75,17 @@ export default {
                   >event</span
                 >
                 Services
+              </router-link>
+            </li>
+            <!-- Removed the update service tab because it was unecessary-->
+            <li>
+              <router-link v-if="user.isLoggedIn && user.role === 'editor'" to="/newService">
+                <span
+                  style="position: relative; top: 6px"
+                  class="material-icons"
+                  >event</span
+                >
+                New Service
               </router-link>
             </li>
             <li>
@@ -136,3 +154,8 @@ export default {
   padding: 18px;
 }
 </style>
+
+
+
+
+

@@ -1,8 +1,13 @@
 <script>
 import axios from 'axios'
+import { useLoggedInUserStore } from "@/store/loggedInUser"
 const apiURL = import.meta.env.VITE_ROOT_API
 
 export default {
+  setup() {
+    const user = useLoggedInUserStore()
+    return {user}
+  },
   data() {
     return {
       queryData: [],
@@ -46,7 +51,9 @@ export default {
       this.getClients()
     },
     editClient(clientID) {
-      this.$router.push({ name: 'updateclient', params: { id: clientID } })
+      if (this.user.role === 'editor') {
+        this.$router.push({ name: 'updateclient', params: { id: clientID } })
+      }
     }
   }
 }
