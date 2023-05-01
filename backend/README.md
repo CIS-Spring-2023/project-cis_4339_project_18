@@ -28,4 +28,4 @@ There seems to be a recent issue from the side of MongoDB Atlas where the cluste
 
 ## Postman Documentation
 
-Can be found at <https://documenter.getpostman.com/view/23133138/2s83mdJiqh>
+Can be found at <https://documenter.getpostman.com/view/19885301/2s93eSaavw>
