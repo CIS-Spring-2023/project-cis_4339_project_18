@@ -1,6 +1,8 @@
 <script>
 import { DateTime } from 'luxon'
 import axios from 'axios'
+//import { mapActions } from 'pinia'
+//import { useClientsStore } from "@/store/listclients"
 import AttendanceChart from './barChart.vue'
 import zipChart from './pieChart.vue'
 const apiURL = import.meta.env.VITE_ROOT_API
@@ -32,16 +34,20 @@ export default {
   },
 
   methods: {
+
+    //...mapActions(useClientsStore, { getClients: 'fetchClients' }),
+
     async getAttendanceData() {
       try {
         this.errorBar = null
         this.loading = true
-        const response = await axios.get(`${apiURL}/events/attendance`)
-        this.recentEvents = response.data
-        this.labels = response.data.map(
+        const response = await fetch('/data/events.json')  // Since backend is not set yet getting data from json file
+        const result = await response.json();
+        this.recentEvents = result.Attendance
+        this.labels = result.Attendance.map(
           (item) => `${item.name} (${this.formattedDate(item.date)})`
         )
-        this.chartData = response.data.map((item) => item.attendees.length)
+        this.chartData = result.Attendance.map((item) => item.attendees)
       } catch (err) {
         if (err.response) {
           // client received an error response (5xx, 4xx)
@@ -158,7 +164,7 @@ export default {
               >
                 <td class="p-2 text-left">{{ event.name }}</td>
                 <td class="p-2 text-left">{{ formattedDate(event.date) }}</td>
-                <td class="p-2 text-left">{{ event.attendees.length }}</td>
+                <td class="p-2 text-left">{{ event.attendees }}</td>
               </tr>
             </tbody>
           </table>
